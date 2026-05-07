@@ -5,26 +5,21 @@ export interface Dimensions {
   height: number;
 }
 
-const getWindowDimensions = (): Dimensions | null => {
-  if (typeof window !== 'undefined') {
-    const { innerWidth: width, innerHeight: height } = window;
-    return {
-      width,
-      height,
-    };
-  }
-  return null;
-};
 
-export const useWindowDimensions = (): Dimensions | null => {
-  const [windowDimensions, setWindowDimensions] = useState(
-    getWindowDimensions(),
-  );
+export const useWindowDimensions = () => {
+  // Initialize with null or undefined to avoid SSR mismatch
+  const [windowDimensions, setWindowDimensions] = useState<Dimensions | null>(null);
 
   useEffect(() => {
     function handleResize() {
-      setWindowDimensions(getWindowDimensions());
+      setWindowDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
     }
+
+    // Set initial size
+    handleResize();
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
