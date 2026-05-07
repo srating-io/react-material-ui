@@ -10,6 +10,7 @@ const external = [
   ...Object.keys(pkg.dependencies || {}),
   ...Object.keys(pkg.peerDependencies || {}),
   ...Object.keys(pkg.devDependencies || {}),
+  'react/jsx-runtime',
 ];
 
 const sharedConfig = {
@@ -19,6 +20,7 @@ const sharedConfig = {
   sourcemap: true,
   external,
   target: 'es2020', // or your browserslist equivalent
+  jsx: 'automatic',
 };
 
 async function build() {
