@@ -2,12 +2,12 @@
 
 import { useRef } from 'react';
 import { createPortal } from 'react-dom';
-import Paper from '../container/Paper.tsx';
+import { Paper } from '../container/Paper.tsx';
 import CloseIcon from '@esmalley/react-material-icons/Close';
 import { Objector, Style } from '@esmalley/ts-utils';
 
 
-const Modal = (
+export const Modal = (
   {
     open,
     onClose,
@@ -165,4 +165,3 @@ const Modal = (
   );
 };
 
-export default Modal;

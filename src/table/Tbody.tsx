@@ -3,7 +3,7 @@
 import { Objector, Style } from '@esmalley/ts-utils';
 
 
-const Tbody = (
+export const Tbody = (
   {
     style = {},
     children,
@@ -28,4 +28,3 @@ const Tbody = (
   );
 };
 
-export default Tbody;

@@ -2,14 +2,14 @@
 
 import React, { useRef, useState, useEffect, Profiler, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
-import Paper from '../container/Paper.tsx';
+import { Paper } from '../container/Paper.tsx';
 // import useIsTouchDevice from '@/components/hooks/useIsTouchDevice';
 
 // todo on hover might need an if width < 500 to disable if hover amount is longer than x seconds, gets buggy while scrolling
 
 // tip, if the tooltip is not showing up, the react tsx file is probably not appending the ...props stuff
 
-const Tooltip = <T extends HTMLElement>(
+export const Tooltip = <T extends HTMLElement>(
   {
     text,
     position = 'bottom',
@@ -359,4 +359,3 @@ const Tooltip = <T extends HTMLElement>(
   );
 };
 
-export default Tooltip;

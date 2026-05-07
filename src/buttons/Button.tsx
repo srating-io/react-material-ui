@@ -8,7 +8,7 @@ import { Color, Style } from '@esmalley/ts-utils';
 import { KeyboardArrowDown as KeyboardArrowDownIcon } from '@esmalley/react-material-icons/KeyboardArrowDown';
 import { RefObject } from 'react';
 
-const Button = (
+export const Button = (
   {
     title,
     value,
@@ -133,4 +133,3 @@ const Button = (
   );
 };
 
-export default Button;

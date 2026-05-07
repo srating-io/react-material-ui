@@ -3,7 +3,7 @@
 import { useTheme } from '../contexts/themeContext.tsx';
 import { Color, Objector, Style } from '@esmalley/ts-utils';
 
-const Skeleton = (
+export const Skeleton = (
   {
     type = 'text',
     animation = 'pulse',
@@ -71,4 +71,3 @@ const Skeleton = (
   );
 };
 
-export default Skeleton;

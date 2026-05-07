@@ -5,7 +5,7 @@ import { useTheme } from '../contexts/themeContext.tsx';
 import { Color, Style } from '@esmalley/ts-utils';
 import { RefObject } from 'react';
 
-const Tab = (
+export const Tab = (
   {
     title,
     value,
@@ -72,5 +72,3 @@ const Tab = (
     </div>
   );
 };
-
-export default Tab;

@@ -3,17 +3,17 @@
 import { useTheme } from '../contexts/themeContext.tsx';
 import KeyboardArrowDownIcon from '@esmalley/react-material-icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@esmalley/react-material-icons/KeyboardArrowUp';
-import Typography from '../text/Typography.tsx';
+import { Typography } from '../text/Typography.tsx';
 import { SelectInputProps, useSelectInputLogic } from './hooks/useInputLogic.ts';
 import { Cancel as CancelIcon } from '@esmalley/react-material-icons/Cancel';
-import IconButton from '../buttons/IconButton.tsx';
+import { IconButton } from '../buttons/IconButton.tsx';
 
 import { Objector, Style, Color } from '@esmalley/ts-utils';
 import { useCallback, useMemo, useRef, useState } from 'react';
-import Menu, { MenuOption } from '../menu/Menu.tsx';
+import { Menu, MenuOption } from '../menu/Menu.tsx';
 
 
-const Select: React.FC<SelectInputProps> = (props) => {
+export const Select: React.FC<SelectInputProps> = (props) => {
   const {
     inputHandler,
     options,

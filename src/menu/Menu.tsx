@@ -3,16 +3,16 @@
 // import { useTheme } from '../contexts/themeContext.tsx';
 import ReactDOM from 'react-dom';
 import React, { useEffect, useRef, useState } from 'react';
-import Paper from '../container/Paper.tsx';
+import { Paper } from '../container/Paper.tsx';
 import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions.ts';
 import CloseIcon from '@esmalley/react-material-icons/Close';
-import MenuList from './MenuList.tsx';
-import MenuItem from './MenuItem.tsx';
-import MenuListIcon from './MenuListIcon.tsx';
-import MenuListText from './MenuListText.tsx';
+import { MenuList } from './MenuList.tsx';
+import { MenuItem } from './MenuItem.tsx';
+import { MenuListIcon } from './MenuListIcon.tsx';
+import { MenuListText } from './MenuListText.tsx';
 import { useTheme } from '../contexts/themeContext.tsx';
 import { Objector, Style } from '@esmalley/ts-utils';
-import Typography from '../text/Typography.tsx';
+import { Typography } from '../text/Typography.tsx';
 
 type onSelectValue = MenuOption;
 
@@ -70,7 +70,7 @@ type anchorOrigin = {
 const transitionDurationMS = 0;
 const menuPadding = 16;
 
-const Menu = (
+export const Menu = (
   {
     open = false,
     options,
@@ -494,4 +494,3 @@ const Menu = (
   // );
 };
 
-export default Menu;

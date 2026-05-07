@@ -4,7 +4,7 @@ import { useTheme } from '../contexts/themeContext.tsx';
 import { Objector, Style } from '@esmalley/ts-utils';
 
 
-const Divider = (
+export const Divider = (
   {
     style = {},
   }:
@@ -21,4 +21,3 @@ const Divider = (
   return <hr className = {Style.getStyleClassName(hrStyle)} />;
 };
 
-export default Divider;

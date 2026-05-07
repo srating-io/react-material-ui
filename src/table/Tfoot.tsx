@@ -3,7 +3,7 @@
 import { Objector, Style } from '@esmalley/ts-utils';
 
 
-const Tfoot = (
+export const Tfoot = (
   {
     style = {},
     children,
@@ -28,4 +28,3 @@ const Tfoot = (
   );
 };
 
-export default Tfoot;

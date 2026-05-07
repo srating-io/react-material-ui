@@ -3,7 +3,7 @@
 import { Style } from '@esmalley/ts-utils';
 
 
-const MenuList = (
+export const MenuList = (
   {
     style = {},
     children,
@@ -30,4 +30,3 @@ const MenuList = (
   );
 };
 
-export default MenuList;

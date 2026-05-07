@@ -3,7 +3,7 @@
 import { Style } from '@esmalley/ts-utils';
 
 
-const MenuListIcon = (
+export const MenuListIcon = (
   {
     style = {},
     children,
@@ -28,4 +28,3 @@ const MenuListIcon = (
   );
 };
 
-export default MenuListIcon;

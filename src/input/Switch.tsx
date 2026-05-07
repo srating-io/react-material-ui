@@ -3,7 +3,7 @@
 'use client';
 
 import { useTheme } from '../contexts/themeContext.tsx';
-import Typography from '../text/Typography.tsx'; // Adjust path if needed
+import { Typography } from '../text/Typography.tsx'; // Adjust path if needed
 import { useState } from 'react';
 import { Color, Style } from '@esmalley/ts-utils';
 
@@ -26,7 +26,7 @@ export interface SwitchProps {
 
 // todo make keyboard tab work on this component
 
-const Switch: React.FC<SwitchProps> = ({
+export const Switch: React.FC<SwitchProps> = ({
   label,
   value: valueProp,
   defaultChecked,
@@ -142,6 +142,4 @@ const Switch: React.FC<SwitchProps> = ({
     </div>
   );
 };
-
-export default Switch;
 

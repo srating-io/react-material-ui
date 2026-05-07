@@ -3,7 +3,7 @@
 import { useTheme } from '../contexts/themeContext.tsx';
 import { Objector, Style } from '@esmalley/ts-utils';
 
-const MenuItem = (
+export const MenuItem = (
   {
     disabled = false,
     active = false,
@@ -71,4 +71,3 @@ const MenuItem = (
   );
 };
 
-export default MenuItem;

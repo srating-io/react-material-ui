@@ -4,7 +4,7 @@ import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions.ts
 import { Objector, Style } from '@esmalley/ts-utils';
 
 
-const Columns = (
+export const Columns = (
   {
     numberOfColumns = 2,
     breakPoint = 475,
@@ -47,4 +47,3 @@ const Columns = (
   );
 };
 
-export default Columns;

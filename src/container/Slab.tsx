@@ -3,7 +3,7 @@
 
 import { useTheme } from '../contexts/themeContext.tsx';
 import React, { useState } from 'react';
-import Typography from '../text/Typography.tsx';
+import { Typography } from '../text/Typography.tsx';
 import HelpIcon from '@esmalley/react-material-icons/Help';
 // import InfoIcon from '@esmalley/react-material-icons/Info';
 
@@ -29,7 +29,7 @@ export const getBaseLabelStyle = (
 /**
  * Slab component, just a label with some text
  */
-const Slab = (
+export const Slab = (
   {
     label,
     primary,
@@ -88,4 +88,3 @@ const Slab = (
   );
 };
 
-export default Slab;

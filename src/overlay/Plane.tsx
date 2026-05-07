@@ -5,7 +5,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 
 
-const Plane = (
+export const Plane = (
   {
     open,
     onClose,
@@ -219,4 +219,3 @@ const Plane = (
   );
 };
 
-export default Plane;

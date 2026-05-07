@@ -14,7 +14,7 @@ interface ThProps extends React.ThHTMLAttributes<HTMLTableCellElement> {
   ref?: React.Ref<HTMLTableCellElement>;
 }
 
-const Th = (
+export const Th = (
   {
     sortDirection = false,
     sortable = false,
@@ -116,4 +116,3 @@ const Th = (
   );
 };
 
-export default Th;

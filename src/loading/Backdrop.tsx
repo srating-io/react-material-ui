@@ -4,7 +4,7 @@ import { Objector, Style } from '@esmalley/ts-utils';
 import React from 'react';
 
 
-const Backdrop = (
+export const Backdrop = (
   {
     open = false,
     children,
@@ -49,4 +49,3 @@ const Backdrop = (
   );
 };
 
-export default Backdrop;

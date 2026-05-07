@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
-/* eslint-disable no-unused-expressions */
+
+
 /* eslint-disable prefer-destructuring */
 
 'use client';
@@ -24,7 +24,7 @@ export interface IconButtonProps extends Omit<HTMLAttributes<HTMLDivElement>, 'o
   ref?: RefObject<HTMLDivElement> | null;
 }
 
-const IconButton: React.FC<IconButtonProps> = ({
+export const IconButton: React.FC<IconButtonProps> = ({
   icon,
   value,
   onClick,
@@ -158,5 +158,3 @@ const IconButton: React.FC<IconButtonProps> = ({
     </div>
   );
 };
-
-export default IconButton;

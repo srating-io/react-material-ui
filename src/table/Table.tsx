@@ -1,11 +1,11 @@
 'use client';
 
 import { Objector, Style } from '@esmalley/ts-utils';
-import Paper from '../container/Paper.tsx';
+import { Paper } from '../container/Paper.tsx';
 
 
 
-const Table = (
+export const Table = (
   {
     style = {},
     overlayStyle = {},
@@ -50,4 +50,3 @@ const Table = (
   );
 };
 
-export default Table;

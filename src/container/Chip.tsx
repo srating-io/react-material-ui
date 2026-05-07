@@ -2,11 +2,11 @@
 
 import { useTheme } from '../contexts/themeContext.tsx';
 import { Color, Style } from '@esmalley/ts-utils';
-import Typography from '../text/Typography.tsx';
+import { Typography } from '../text/Typography.tsx';
 import CancelIcon from '@esmalley/react-material-icons/Cancel';
 import { useState } from 'react';
 
-const Chip = (
+export const Chip = (
   {
     title,
     value,
@@ -105,4 +105,3 @@ const Chip = (
   );
 };
 
-export default Chip;

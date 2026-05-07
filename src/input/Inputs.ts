@@ -12,7 +12,7 @@ type ErrorHandler = {
  * But I have no way to access it because thats how react works
  * So each input MUST pass a handler, so I can grab errors on a save button and not have to duplicate code
  */
-class Inputs {
+export class Inputs {
   // constructor() {
   // }
 
@@ -53,4 +53,3 @@ class Inputs {
   }
 }
 
-export default Inputs;

@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import Calendar from '../calendar/Calendar.tsx';
-import TextInput from './TextInput.tsx';
-import Plane from '../overlay/Plane.tsx';
-import Paper from '../container/Paper.tsx';
+import { Calendar } from '../calendar/Calendar.tsx';
+import { TextInput } from './TextInput.tsx';
+import { Plane } from '../overlay/Plane.tsx';
+import { Paper } from '../container/Paper.tsx';
 import { useTheme } from '../contexts/themeContext.tsx';
 
 import { Objector, Style, Dates } from '@esmalley/ts-utils';
@@ -57,7 +57,7 @@ const to24Hour = (hours: number, meridiem: string) => {
 };
 
 
-const DateInput: React.FC<DateInputProps> = (props) => {
+export const DateInput: React.FC<DateInputProps> = (props) => {
   const {
     // Pull out the specific DateInput props
     value: valueProp,
@@ -598,5 +598,3 @@ const TimeColumn = <T extends number | string>({ items, selected, onSelect, form
   );
 };
 
-
-export default DateInput;

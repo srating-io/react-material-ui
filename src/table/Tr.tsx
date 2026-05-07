@@ -3,7 +3,7 @@
 import { Objector, Style } from '@esmalley/ts-utils';
 
 
-const Tr = (
+export const Tr = (
   {
     onClick,
     style = {},
@@ -40,4 +40,3 @@ const Tr = (
   );
 };
 
-export default Tr;

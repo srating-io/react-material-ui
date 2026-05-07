@@ -9,7 +9,7 @@ export interface TdProps extends Omit<React.TdHTMLAttributes<HTMLTableCellElemen
 }
 
 
-const Td = (
+export const Td = (
   {
     // sortDirection = false,
     onClick,
@@ -44,4 +44,3 @@ const Td = (
   );
 };
 
-export default Td;

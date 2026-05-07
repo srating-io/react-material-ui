@@ -4,7 +4,7 @@ import { useTheme } from '../contexts/themeContext.tsx';
 import { Objector, Style } from '@esmalley/ts-utils';
 import React from 'react';
 
-const LinearProgress = (
+export const LinearProgress = (
   {
     type = 'indeterminate',
     value = 0,
@@ -107,5 +107,3 @@ const LinearProgress = (
   );
 };
 
-
-export default LinearProgress;

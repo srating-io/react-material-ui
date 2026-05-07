@@ -54,7 +54,7 @@ type TypographyProps =
   // For tags that map to 'span'
   | (TypographyBaseProps & { type: 'caption' | 'overline' } & React.ComponentPropsWithoutRef<'span'>);
 
-const Typography = (
+export const Typography = (
   {
     children,
     type,
@@ -184,4 +184,3 @@ const Typography = (
   );
 };
 
-export default Typography;

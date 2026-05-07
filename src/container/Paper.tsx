@@ -10,7 +10,7 @@ import React, { AnimationEventHandler, RefObject } from 'react';
  * Alter the surface elevation and shadows with `elevation`
  * Can add click events, hover animation etc.
  */
-const Paper = (
+export const Paper = (
   {
     elevation = 3,
     style = {},
@@ -106,4 +106,3 @@ const Paper = (
   );
 };
 
-export default Paper;

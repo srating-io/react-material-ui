@@ -2,15 +2,15 @@
 
 /* eslint-disable consistent-return */
 
-import Typography from '../text/Typography.tsx';
-import Button from '../buttons/Button.tsx';
+import { Typography } from '../text/Typography.tsx';
+import { Button } from '../buttons/Button.tsx';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTheme } from '../contexts/themeContext.tsx';
 
 import CheckIcon from '@esmalley/react-material-icons/Check';
 import KeyboardArrowLeftIcon from '@esmalley/react-material-icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@esmalley/react-material-icons/KeyboardArrowRight';
-import IconButton from '../buttons/IconButton.tsx';
+import { IconButton } from '../buttons/IconButton.tsx';
 import { Style } from '@esmalley/ts-utils';
 import { useKontororu } from '../hooks/useKontororu.ts';
 
@@ -23,7 +23,7 @@ export type WizardStep = {
 }
 
 
-const Wizard = (
+export const Wizard = (
   {
     steps,
     validationTrigger,
@@ -363,4 +363,3 @@ const Wizard = (
   );
 };
 
-export default Wizard;

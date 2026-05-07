@@ -9,6 +9,7 @@ const pkg = JSON.parse(await readFile(new URL('./package.json', import.meta.url)
 const external = [
   ...Object.keys(pkg.dependencies || {}),
   ...Object.keys(pkg.peerDependencies || {}),
+  ...Object.keys(pkg.devDependencies || {}),
 ];
 
 const sharedConfig = {

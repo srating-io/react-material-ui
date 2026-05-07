@@ -1,10 +1,10 @@
 import { Objector, toaster } from '@esmalley/ts-utils';
 import { useTheme } from '../contexts/themeContext.tsx';
-import Paper from '../container/Paper.tsx';
+import { Paper } from '../container/Paper.tsx';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import IconButton from '../buttons/IconButton.tsx';
+import { IconButton } from '../buttons/IconButton.tsx';
 import ContentCopyIcon from '@esmalley/react-material-icons/ContentCopy';
-import Tooltip from '../overlay/Tooltip.tsx';
+import { Tooltip } from '../overlay/Tooltip.tsx';
 
 type SupportedLang = 'js' | 'ts' | 'sh' | 'py';
 
@@ -25,7 +25,7 @@ const stripIndent = (rawCode: string): string => {
 
 
 
-const CodeBlock = (
+export const CodeBlock = (
   {
     code,
     lang = 'ts',
@@ -201,4 +201,3 @@ const CodeBlock = (
   );
 };
 
-export default CodeBlock;

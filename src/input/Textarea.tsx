@@ -1,15 +1,15 @@
 'use client';
 
 import { useTheme } from '../contexts/themeContext.tsx';
-import Typography from '../text/Typography.tsx';
+import { Typography } from '../text/Typography.tsx';
 import { Color, Objector, Style } from '@esmalley/ts-utils';
 import { TextareaProps, useTextInputLogic } from './hooks/useInputLogic.ts';
 import { useState } from 'react';
-import IconButton from '../buttons/IconButton.tsx';
+import { IconButton } from '../buttons/IconButton.tsx';
 import CancelIcon from '@esmalley/react-material-icons/Cancel';
 
 
-const Textarea: React.FC<TextareaProps> = (props) => {
+export const Textarea: React.FC<TextareaProps> = (props) => {
   const {
     inputHandler,
     ref = null,
@@ -383,4 +383,3 @@ const Textarea: React.FC<TextareaProps> = (props) => {
   */
 };
 
-export default Textarea;

@@ -1,15 +1,15 @@
 'use client';
 
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import Table from './Table.tsx';
-import Thead from './Thead.tsx';
-import Tbody from './Tbody.tsx';
-import Tr from './Tr.tsx';
-import Td from './Td.tsx';
-import Th from './Th.tsx';
+import { Table } from './Table.tsx';
+import { Thead } from './Thead.tsx';
+import { Tbody } from './Tbody.tsx';
+import { Tr } from './Tr.tsx';
+import { Td } from './Td.tsx';
+import { Th } from './Th.tsx';
 import { useTheme } from '../contexts/themeContext.tsx';
 import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions.ts';
-import Tooltip from '../overlay/Tooltip.tsx';
+import { Tooltip } from '../overlay/Tooltip.tsx';
 import { Objector, Sorter, ThemeType } from '@esmalley/ts-utils';
 
 // --- Types ---
@@ -125,9 +125,7 @@ interface VirtualTableProps<T> {
   ) => React.JSX.Element;
 }
 
-
-
-const VirtualTable = <T extends object>({
+export const VirtualTable = <T extends object>({
   ref,
   rows,
   columns,
@@ -458,4 +456,3 @@ const VirtualTable = <T extends object>({
   );
 };
 
-export default VirtualTable;

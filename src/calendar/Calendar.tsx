@@ -6,9 +6,9 @@ import KeyboardArrowRightIcon from '@esmalley/react-material-icons/KeyboardArrow
 import { useTheme } from '../contexts/themeContext.tsx';
 import { Color, Style, Dates } from '@esmalley/ts-utils';
 import React, { RefObject, useEffect, useMemo, useRef, useState } from 'react';
-import Paper from '../container/Paper.tsx';
-import Typography from '../text/Typography.tsx';
-import IconButton from '../buttons/IconButton.tsx';
+import { Paper } from '../container/Paper.tsx';
+import { Typography } from '../text/Typography.tsx';
+import { IconButton } from '../buttons/IconButton.tsx';
 
 // todo somday update left and right buttons to be disabled based on any games eligible on next screen
 // for example in Nov, but trying to go back to Oct, if there are 0 games in Oct, then it should be disabled?
@@ -198,7 +198,7 @@ const YearPicker = (
 };
 
 
-const Calendar = (
+export const Calendar = (
   {
     value,
     onChange,
@@ -361,7 +361,7 @@ const Calendar = (
 
             if (isDisabled) {
               buttonStyle.backgroundColor = 'transparent';
-              // eslint-disable-next-line prefer-destructuring
+
               buttonStyle.color = theme.text.disabled;
               buttonStyle.cursor = 'not-allowed';
             }
@@ -457,5 +457,3 @@ const Calendar = (
     </>
   );
 };
-
-export default Calendar;

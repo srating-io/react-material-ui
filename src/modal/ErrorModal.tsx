@@ -1,12 +1,12 @@
 'use client';
 
 import { useTheme } from '../contexts/themeContext.tsx';
-import Button from '../buttons/Button.tsx';
-import Typography from '../text/Typography.tsx';
-import Modal from './Modal.tsx';
+import { Button } from '../buttons/Button.tsx';
+import { Typography } from '../text/Typography.tsx';
+import { Modal } from './Modal.tsx';
 
 
-const ErrorModal = (
+export const ErrorModal = (
   {
     open,
     title = 'Error',
@@ -42,4 +42,3 @@ const ErrorModal = (
   );
 };
 
-export default ErrorModal;

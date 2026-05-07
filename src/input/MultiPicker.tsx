@@ -2,11 +2,11 @@
 'use client';
 
 import { useTheme } from '../contexts/themeContext.tsx';
-import Columns from '../layout/Columns.tsx';
-import Typography from '../text/Typography.tsx';
-import Paper from '../container/Paper.tsx';
+import { Columns } from '../layout/Columns.tsx';
+import { Typography } from '../text/Typography.tsx';
+import { Paper } from '../container/Paper.tsx';
 import { FocusEvent, useEffect, useMemo, useState } from 'react';
-import Inputs from 'src/input/Inputs.ts';
+import { Inputs } from 'src/input/Inputs.ts';
 
 export type MultiPickerOption = {
   label: string;
@@ -60,7 +60,7 @@ export const getTerminologyOptions = (type: string) => {
 };
 */
 
-const MultiPicker = ({
+export const MultiPicker = ({
   inputHandler,
   label,
   options,
@@ -239,5 +239,4 @@ const MultiPicker = ({
   );
 };
 
-export default MultiPicker;
 

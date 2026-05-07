@@ -3,7 +3,7 @@
 
 import { useTheme } from '../contexts/themeContext.tsx';
 import React from 'react';
-import Typography from '../text/Typography.tsx';
+import { Typography } from '../text/Typography.tsx';
 
 import { Objector, Style } from '@esmalley/ts-utils';
 
@@ -11,7 +11,7 @@ import { Objector, Style } from '@esmalley/ts-utils';
 /**
  * Tile component
  */
-const Tile = (
+export const Tile = (
   {
     icon,
     primary,
@@ -82,4 +82,3 @@ const Tile = (
   );
 };
 
-export default Tile;

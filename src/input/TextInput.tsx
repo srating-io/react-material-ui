@@ -1,17 +1,17 @@
 'use client';
 
 import { useTheme } from '../contexts/themeContext.tsx';
-import Typography from '../text/Typography.tsx';
+import { Typography } from '../text/Typography.tsx';
 import { TextInputProps, useTextInputLogic } from './hooks/useInputLogic.ts';
 import { Cancel as CancelIcon } from '@esmalley/react-material-icons/Cancel';
-import IconButton from '../buttons/IconButton.tsx';
+import { IconButton } from '../buttons/IconButton.tsx';
 
 import { Objector, Style, Color } from '@esmalley/ts-utils';
 import { useState } from 'react';
 
 
 
-const TextInput: React.FC<TextInputProps> = (props) => {
+export const TextInput: React.FC<TextInputProps> = (props) => {
   const {
     inputHandler,
     ref = null,
@@ -250,4 +250,3 @@ const TextInput: React.FC<TextInputProps> = (props) => {
   );
 };
 
-export default TextInput;

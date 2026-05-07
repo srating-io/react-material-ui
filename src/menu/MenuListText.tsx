@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import Typography from '../text/Typography.tsx';
+import { Typography } from '../text/Typography.tsx';
 import { useTheme } from '../contexts/themeContext.tsx';
 import { Style } from '@esmalley/ts-utils';
 
-const MenuListText = (
+export const MenuListText = (
   {
     primary,
     secondary,
@@ -34,4 +34,3 @@ const MenuListText = (
   );
 };
 
-export default MenuListText;

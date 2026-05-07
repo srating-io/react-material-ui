@@ -6,7 +6,7 @@ import React from 'react';
 
 
 
-const CircularProgress = (
+export const CircularProgress = (
   {
     type = 'indeterminate',
     value = 0,
@@ -105,4 +105,3 @@ const CircularProgress = (
   );
 };
 
-export default CircularProgress;

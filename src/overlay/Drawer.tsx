@@ -3,9 +3,9 @@
 import { Style } from '@esmalley/ts-utils';
 import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import Paper from '../container/Paper.tsx';
+import { Paper } from '../container/Paper.tsx';
 
-const Drawer = (
+export const Drawer = (
   {
     open,
     position = 'left',
@@ -95,4 +95,3 @@ const Drawer = (
   );
 };
 
-export default Drawer;

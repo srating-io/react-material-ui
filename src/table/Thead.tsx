@@ -2,7 +2,7 @@
 
 import { Objector, Style } from '@esmalley/ts-utils';
 
-const Thead = (
+export const Thead = (
   {
     style = {},
     children,
@@ -27,4 +27,3 @@ const Thead = (
   );
 };
 
-export default Thead;

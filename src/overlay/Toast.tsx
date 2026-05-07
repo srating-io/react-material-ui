@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import Paper from '../container/Paper.tsx';
-import Typography from '../text/Typography.tsx';
+import { Paper } from '../container/Paper.tsx';
+import { Typography } from '../text/Typography.tsx';
 import CloseIcon from '@esmalley/react-material-icons/Close';
-import IconButton from '../buttons/IconButton.tsx';
+import { IconButton } from '../buttons/IconButton.tsx';
 import InfoIcon from '@esmalley/react-material-icons/Info';
 import WarningIcon from '@esmalley/react-material-icons/Warning';
 import CheckCircleOutlineIcon from '@esmalley/react-material-icons/CheckCircleOutline';
@@ -13,7 +13,7 @@ import { Themes, useTheme } from '../contexts/themeContext.tsx';
 import { Objector, Style, toaster, ToastItem } from '@esmalley/ts-utils';
 
 
-const Toast = () => {
+export const Toast = () => {
   const theme = useTheme();
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   // Keep track of which IDs are currently fading out
@@ -155,4 +155,3 @@ const Toast = () => {
   );
 };
 
-export default Toast;

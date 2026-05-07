@@ -3,7 +3,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect, useCallback, RefObject, InputHTMLAttributes } from 'react';
-import Inputs from '../Inputs.ts';
+import { Inputs } from '../Inputs.ts';
 
 export type InputVariant = 'standard' | 'outlined' | 'filled';
 export type InputFormatter = 'text' | 'number' | 'money';
