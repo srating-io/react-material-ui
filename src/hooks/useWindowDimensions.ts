@@ -5,10 +5,15 @@ export interface Dimensions {
   height: number;
 }
 
+const initialState: Dimensions = {
+  width: 0,
+  height: 0,
+};
 
-export const useWindowDimensions = () => {
+
+export const useWindowDimensions = (): Dimensions => {
   // Initialize with null or undefined to avoid SSR mismatch
-  const [windowDimensions, setWindowDimensions] = useState<Dimensions | null>(null);
+  const [windowDimensions, setWindowDimensions] = useState<Dimensions>(initialState);
 
   useEffect(() => {
     function handleResize() {
