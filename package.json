@@ -69,16 +69,13 @@
   },
   "description": "Material UI components for react.",
   "bugs": {
-    "url": "https://github.com/srating-io/react-matieral-ui/issues"
+    "url": "https://github.com/srating-io/react-material-ui/issues"
   },
-  "homepage": "https://github.com/srating-io/react-matieral-ui#readme",
+  "homepage": "https://github.com/srating-io/react-material-ui#readme",
   "keywords": [],
   "author": "Evan Smalley",
   "dependencies": {
     "@esmalley/ts-utils": "^6.2.4",
     "@esmalley/react-material-icons": "^4.0.2"
-  },
-  "directories": {
-    "doc": "docs"
   }
 }
