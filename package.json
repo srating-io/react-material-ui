@@ -10,6 +10,7 @@
   ],
   "scripts": {
     "clean": "rm -rf dist",
+    "prebuild": "node scripts/generate-exports.js",
     "build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly --outDir dist/types",
     "build:js": "node build.mjs",
     "build": "npm run clean && npm run build:types && npm run build:js && npm run fix:cjs",
@@ -27,10 +28,10 @@
   "publishConfig": {
     "access": "public"
   },
-  "license": "GPL-3.0-or-later",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/srating-io/react-matieral-ui"
+    "url": "git+https://github.com/srating-io/react-matieral-ui.git"
   },
   "eslintConfig": {
     "extends": [
@@ -65,5 +66,19 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.26.1"
+  },
+  "description": "Material UI components for react.",
+  "bugs": {
+    "url": "https://github.com/srating-io/react-matieral-ui/issues"
+  },
+  "homepage": "https://github.com/srating-io/react-matieral-ui#readme",
+  "keywords": [],
+  "author": "Evan Smalley",
+  "dependencies": {
+    "@esmalley/ts-utils": "^6.2.4",
+    "@esmalley/react-material-icons": "^4.0.2"
+  },
+  "directories": {
+    "doc": "docs"
   }
 }

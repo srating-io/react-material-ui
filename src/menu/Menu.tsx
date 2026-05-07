@@ -1,0 +1,497 @@
+'use client';
+
+// import { useTheme } from '../contexts/themeContext.tsx';
+import ReactDOM from 'react-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import Paper from '../container/Paper.tsx';
+import { Dimensions, useWindowDimensions } from '../hooks/useWindowDimensions.ts';
+import CloseIcon from '@esmalley/react-material-icons/Close';
+import MenuList from './MenuList.tsx';
+import MenuItem from './MenuItem.tsx';
+import MenuListIcon from './MenuListIcon.tsx';
+import MenuListText from './MenuListText.tsx';
+import { useTheme } from '../contexts/themeContext.tsx';
+import { Objector, Style } from '@esmalley/ts-utils';
+import Typography from '../text/Typography.tsx';
+
+type onSelectValue = MenuOption;
+
+export type MenuOption = {
+  value: string | number | null;
+  selectable: boolean;
+  group?: string;
+  disabled?: boolean;
+  label?: string;
+  onSelect?: (option: onSelectValue) => void;
+  secondaryLabel?: string;
+  icon?: React.JSX.Element;
+  customLabel?: React.JSX.Element;
+  style?: object;
+}
+
+const getOffsetTop = (rect: DOMRect, vertical: anchorOrigin['vertical']) => {
+  let offset = 36;
+
+  if (typeof vertical === 'number') {
+    offset = vertical;
+  } else if (vertical === 'center') {
+    offset = rect.height / 2;
+  } else if (vertical === 'bottom') {
+    offset = rect.height;
+  }
+
+  return offset;
+};
+
+const getOffsetLeft = (rect: DOMRect, horizontal: anchorOrigin['horizontal']) => {
+  let offset = 0;
+
+  if (typeof horizontal === 'number') {
+    offset = horizontal;
+  } else if (horizontal === 'center') {
+    offset = rect.width / 2;
+  } else if (horizontal === 'right') {
+    offset = rect.width;
+  }
+
+  return offset;
+};
+
+export const MenuDivider = () => {
+  const theme = useTheme();
+  return <hr style = {{ margin: 0, borderWidth: 0, borderStyle: 'solid', borderColor: theme.grey[600], borderBottomWidth: 'thin' }} />;
+};
+
+type anchorOrigin = {
+  vertical: string | number;
+  horizontal: string | number;
+}
+
+const transitionDurationMS = 0;
+const menuPadding = 16;
+
+const Menu = (
+  {
+    open = false,
+    options,
+    anchor,
+    onClose,
+    anchorOrigin = {
+      vertical: 'top',
+      horizontal: 'left',
+    },
+    showCloseButton = false,
+    useAnchorWidth = false,
+    style = {},
+    ...props
+  }:
+  {
+    open: boolean;
+    options: MenuOption[];
+    anchor: HTMLElement | null;
+    onClose: () => void;
+    anchorOrigin?: anchorOrigin;
+    showCloseButton?: boolean;
+    useAnchorWidth?: boolean;
+    style?: React.CSSProperties;
+  },
+) => {
+  const theme = useTheme();
+  const menuRootRef = useRef<HTMLElement | null>(null);
+  const menuContentRef = useRef<HTMLDivElement | null>(null);
+
+  const [hasWidth, setHasWidth] = useState(false);
+
+  // Store the actual calculated position after adjustment
+  const [finalPosition, setFinalPosition] = useState<{ top: number; left: number } | null>(null);
+
+  const [finalDimensions, setFinalDimensions] = useState<{ maxHeight?: number; maxWidth?: number; width?: number; } | null>(null);
+
+  const [activeIndex, setActiveIndex] = useState(-1); // For keyboard navigation
+
+  // Store the determined transform origin for CSS
+  // const [finalTransformOrigin, setFinalTransformOrigin] = useState<{ x: string, y: string } | null>(null);
+
+  const { width } = useWindowDimensions() as Dimensions;
+
+  const overlayStyle: React.CSSProperties = {
+    position: 'fixed',
+    display: 'none',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1300,
+    // transition: 'background-color 285ms cubic-bezier(0.4, 0, 0.2, 1)',
+  };
+
+
+  const paperStyle: React.CSSProperties = Objector.extender(
+    {
+      display: 'none',
+      position: 'absolute',
+      overflowY: 'auto',
+      overflowX: 'hidden',
+      minWidth: 16,
+      minHeight: 16,
+      width: (useAnchorWidth ? finalDimensions?.width || 'auto' : 'auto'),
+      maxHeight: finalDimensions?.maxHeight || 'calc(100% - 32px)',
+      maxWidth: finalDimensions?.maxWidth || 'calc(100% - 32px)',
+      outline: 0,
+      opacity: 0,
+      // opacity: _isVisible ? 1 : 0,
+      // transition: `opacity ${transitionDurationMS}ms cubic-bezier(0.4, 0, 0.2, 1), transform 190ms cubic-bezier(0.4, 0, 0.2, 1)`,
+      // scrollbarGutter: 'stable',
+    },
+    style,
+  );
+
+  if (finalPosition && open && finalDimensions) {
+    paperStyle.display = 'block';
+    overlayStyle.display = 'block';
+
+    // only make it visible after all the shifting and adjustments have been made
+    if (hasWidth) {
+      paperStyle.opacity = 1;
+    }
+    // paperStyle.transformOrigin = `${finalTransformOrigin.x} ${finalTransformOrigin.y}`;
+    paperStyle.top = finalPosition.top;
+    paperStyle.left = finalPosition.left;
+  }
+
+  const handleClose = () => {
+    setFinalPosition(null);
+    setFinalDimensions(null);
+    setHasWidth(false);
+    onClose();
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    const target = event.target as Node;
+
+    // If the element is no longer in the document, it was likely
+    // detached by a React re-render. We should probably ignore it.
+    if (!target || !target.isConnected) {
+      return;
+    }
+    // console.log('Is target still in document?', document.body.contains(event.target as Node));
+    // console.log('target', target)
+    // console.log('target.isConnected', target.isConnected)
+    // console.log('menuContentRef.current', menuContentRef.current)
+    // console.log('anchor', anchor)
+
+    if (
+      menuContentRef.current &&
+      !menuContentRef.current.contains(target) &&
+      anchor &&
+      !anchor.contains(target)
+    ) {
+      // console.log('OK')
+      handleClose();
+    }
+  };
+
+  // Effect to handle clicks outside the menu content to close it
+  useEffect(() => {
+    if (open && menuRootRef.current) {
+      // Add event listener to the document (or the overlay div)
+      // We add it to the menuRoot (the portal's target) to capture events on the overlay
+      menuRootRef.current.addEventListener('mousedown', handleClickOutside);
+    }
+
+    // Cleanup the event listener when the component unmounts or menu closes
+    return () => {
+      if (menuRootRef.current) {
+        menuRootRef.current.removeEventListener('mousedown', handleClickOutside);
+      }
+    };
+  }, [open, onClose, menuRootRef, menuContentRef, anchor]);
+
+  // if the options change, reset the activeIndex
+  useEffect(() => {
+    setActiveIndex(-1);
+  }, [options]);
+
+
+  // Effect to get the 'menu-root' DOM node once on mount
+  useEffect(() => {
+    menuRootRef.current = document.getElementById('menu-root');
+  }, []);
+
+  useEffect(() => {
+    if (open && anchor && menuContentRef.current) {
+      const anchorRect = anchor.getBoundingClientRect();
+      const menuRect = menuContentRef.current.getBoundingClientRect();
+
+      if (menuRect.width) {
+        setHasWidth(true);
+      }
+
+      const calculatedTop = anchorRect.top + getOffsetTop(anchorRect, anchorOrigin.vertical);
+      let calculatedLeft = anchorRect.left + getOffsetLeft(anchorRect, anchorOrigin.horizontal);
+
+
+      let finalMaxHeight: number | undefined = undefined;
+
+      // let finalOriginX: string | undefined = undefined;
+      // let finalOriginY: string | undefined = undefined;
+
+      // let originX = anchorOrigin.horizontal;
+      // let originY = anchorOrigin.vertical;
+
+      const spaceBelow = window.innerHeight - calculatedTop - menuPadding;
+
+      // If the menu is taller than the available space below, just cap the height
+      // so the user can scroll inside it. Never push it upward.
+      if (menuRect.height > spaceBelow) {
+        finalMaxHeight = spaceBelow;
+      }
+
+      /*
+
+      // --- Vertical Positioning Adjustments (Prioritize below anchor, adjust height) ---
+      const spaceBelow = window.innerHeight - calculatedTop - menuPadding;
+      const spaceAbove = calculatedTop - menuPadding;
+
+
+      if (calculatedTop + menuRect.height > window.innerHeight - menuPadding) {
+        // Menu overflows bottom
+        if (spaceBelow >= menuRect.height) { // If there's just enough space below without adjusting height
+          // Don't adjust maxHeight, keep default
+        } else if (spaceBelow > spaceAbove) {
+          // More space below than above, so keep it below but limit height
+          finalMaxHeight = spaceBelow;
+          // Also, ensure the menu's top aligns with the anchor's bottom for common scenarios
+          if (anchorOrigin.vertical === 'top') { // If originally attached to top of anchor
+            calculatedTop = anchorRect.bottom; // Align menu top with anchor bottom
+          }
+        } else {
+          // More space above, but we don't want to go above the anchor.
+          // Adjust `calculatedTop` upwards to bring the bottom into view, but not above anchor's top
+          calculatedTop = Math.max(menuPadding, window.innerHeight - menuRect.height - menuPadding);
+          // Ensure calculatedTop doesn't go above anchorRect.top for this specific requirement
+          calculatedTop = Math.max(calculatedTop, anchorRect.top);
+          finalMaxHeight = window.innerHeight - calculatedTop - menuPadding;
+          // finalOriginY = 'bottom'; // If it's pushed up, consider transforming from bottom
+        }
+      }
+
+      // If, after all adjustments, the top is still off-screen (shouldn't happen with current logic, but as safeguard)
+      if (calculatedTop < menuPadding) {
+        calculatedTop = menuPadding;
+        finalMaxHeight = window.innerHeight - calculatedTop - menuPadding;
+        // finalOriginY = 'top';
+      }
+        */
+
+      // --- Horizontal Positioning Adjustments (Same as before) ---
+      if (calculatedLeft + menuRect.width > window.innerWidth - menuPadding) {
+        calculatedLeft = window.innerWidth - menuRect.width - menuPadding;
+        // finalOriginX = 'right'; // If pushed to left, origin from right
+      }
+      if (calculatedLeft < menuPadding) {
+        calculatedLeft = menuPadding;
+        // finalOriginX = 'left'; // If pushed to right, origin from left
+      }
+
+      setFinalPosition({ top: calculatedTop, left: calculatedLeft });
+      if (useAnchorWidth) {
+        setFinalDimensions({ maxHeight: finalMaxHeight, maxWidth: width - 36, width: anchorRect.width });
+      } else {
+        setFinalDimensions({ maxHeight: finalMaxHeight, maxWidth: width - 36 });
+      }
+
+      // if (finalOriginX && finalOriginY) {
+      //   setFinalTransformOrigin({ x: String(finalOriginX), y: String(finalOriginY) });
+      // }
+    }
+  }, [open, anchor, menuRootRef, menuContentRef.current, width, anchor?.clientWidth]);
+
+
+  // Effect to handle clicks outside the menu content to close it
+  useEffect(() => {
+    if (open && menuRootRef.current) {
+      // Add event listener to the document (or the overlay div)
+      // We add it to the menuRoot (the portal's target) to capture events on the overlay
+      menuRootRef.current.addEventListener('mousedown', handleClickOutside);
+    }
+
+    // Cleanup the event listener when the component unmounts or menu closes
+    return () => {
+      if (menuRootRef.current) {
+        menuRootRef.current.removeEventListener('mousedown', handleClickOutside);
+      }
+    };
+  }, [open, onClose, menuRootRef, menuContentRef, anchor]);
+
+  const getNextIndex = (current: number) => {
+    const nextIndex = current + 1;
+    if (!options[nextIndex]) {
+      return current;
+    }
+
+    if (options[nextIndex].selectable) {
+      return nextIndex;
+    }
+
+    return getNextIndex(nextIndex);
+  };
+
+  const getPrevIndex = (current: number) => {
+    const prevIndex = current - 1;
+    if (!options[prevIndex]) {
+      return current;
+    }
+
+    if (options[prevIndex].selectable) {
+      return prevIndex;
+    }
+
+    return getPrevIndex(prevIndex);
+  };
+
+
+  // handle keyboard navigation selections
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (activeIndex < options.length - 1) {
+        setActiveIndex(getNextIndex(activeIndex));
+      }
+    }
+
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (activeIndex > 0) {
+        setActiveIndex(getPrevIndex(activeIndex));
+      }
+    }
+
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (options[activeIndex].onSelect) {
+        options[activeIndex].onSelect(options[activeIndex]);
+      }
+    }
+
+    // escape is already hanlded below
+  };
+
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    // eslint-disable-next-line consistent-return
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [open, activeIndex, options]);
+
+
+  // Also handle Escape key press to close the menu
+  useEffect(() => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        handleClose();
+      }
+    };
+
+    if (open) {
+      document.addEventListener('keydown', handleEscapeKey);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [open, onClose]);
+
+  if (
+    !menuRootRef.current ||
+    !open
+  ) {
+    return null;
+  }
+
+
+  const closeContainerStyle: React.CSSProperties = {
+    position: 'sticky',
+    top: 0,
+    right: 0,
+    width: 40,
+    height: 50,
+    cursor: 'pointer',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    float: 'right',
+    zIndex: 9999,
+  };
+
+  const closeContainer = (
+    <div className={Style.getStyleClassName(closeContainerStyle)} onClick={onClose}>
+      <CloseIcon />
+    </div>
+  );
+
+  const group_x_decorated: Record<string, boolean> = {};
+
+  return ReactDOM.createPortal(
+    <div className={Style.getStyleClassName(overlayStyle)} {...props}>
+      <Paper style={paperStyle} ref = {menuContentRef} tranparency={0.95}>
+        {showCloseButton ? closeContainer : ''}
+        <MenuList>
+          {options.map((option, index) => {
+            const handleIt = () => {
+              if (option.onSelect && !option.disabled) {
+                option.onSelect(option);
+              }
+            };
+
+            let groupLabel: React.JSX.Element | null = null;
+
+            if (option.group && !(option.group in group_x_decorated)) {
+              group_x_decorated[option.group] = true;
+
+              groupLabel = <div style = {{ padding: '0px 5px' }}><Typography type = 'body1' style = {{ color: theme.text.secondary }}>{option.group}</Typography></div>;
+            }
+
+            if (option.customLabel) {
+              return (
+                <>
+                  {groupLabel}
+                  <div key = {index} onClick={handleIt}>
+                    {option.customLabel}
+                  </div>
+                </>
+              );
+            }
+            return (
+              <>
+                {groupLabel}
+                <MenuItem key = {option.value} style = {option.style || {}} onClick={handleIt} active = {activeIndex === index} disabled = {option.disabled}>
+                  {option.icon ? <MenuListIcon>{option.icon}</MenuListIcon> : ''}
+                  <MenuListText primary={option.label || 'Unknown'} secondary={option.secondaryLabel || undefined} />
+                </MenuItem>
+              </>
+            );
+          })}
+        </MenuList>
+      </Paper>
+    </div>,
+    menuRootRef.current,
+  );
+
+  // return (
+  //   <Plane open = {open} onClose={onClose} anchor = {anchor}>
+  //     <div className={Style.getStyleClassName(overlayStyle)} {...props}>
+  //       <Paper style={paperStyle} ref = {menuContentRef} tranparency={0.95}>
+  //         {showCloseButton ? closeContainer : ''}
+  //         {children}
+  //       </Paper>
+  //     </div>
+  //   </Plane>
+  // );
+};
+
+export default Menu;

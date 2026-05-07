@@ -1,0 +1,243 @@
+
+'use client';
+
+import { useTheme } from '../contexts/themeContext.tsx';
+import Columns from '../layout/Columns.tsx';
+import Typography from '../text/Typography.tsx';
+import Paper from '../container/Paper.tsx';
+import { FocusEvent, useEffect, useMemo, useState } from 'react';
+import Inputs from 'src/input/Inputs.ts';
+
+export type MultiPickerOption = {
+  label: string;
+  value: string | number;
+};
+
+// todo compbine with other inputs typ props in useInputLgic?
+
+export interface MultiPickerProps {
+  inputHandler: Inputs;
+  options: MultiPickerOption[];
+  selected: (string | number)[];
+  label?: string;
+  onChange?: (value: (string | number)[] | string | number | null) => void;
+  style?: React.CSSProperties;
+  isRadio?: boolean;
+  required?: boolean;
+  disabled?: boolean;
+  error?: boolean; // External error control
+  errorMessage?: string; // External error message
+  showError?: boolean;
+  triggerValidation?: boolean;
+  numberOfColumns?: number;
+}
+
+/*
+todo put this in app
+export const getTerminologyOptions = (type: string) => {
+  const store = getStore();
+
+  const terminologies = store.getState().dictionaryReducer.terminology || {};
+
+  const options: MultiPickerOption[] = [];
+
+  for (const terminology_id in terminologies) {
+    const row = terminologies[terminology_id];
+
+    if (row.inactive) {
+      continue;
+    }
+
+    if (row.type === type) {
+      options.push({
+        label: row.name,
+        value: row.terminology_id,
+      });
+    }
+  }
+
+  return options;
+};
+*/
+
+const MultiPicker = ({
+  inputHandler,
+  label,
+  options,
+  selected,
+  onChange,
+  isRadio = false,
+  required = false,
+  disabled = false,
+  error: externalError = false,
+  errorMessage = 'Selection is required',
+  showError = true,
+  style,
+  triggerValidation = false,
+  numberOfColumns = 2,
+}: MultiPickerProps) => {
+  const theme = useTheme();
+  const instanceId = useMemo(() => crypto.randomUUID(), []);
+
+  // Initialize state, but keep it synced with props
+  const [internalSelected, setInternalSelected] = useState<(string | number)[]>(selected || []);
+  const [isTouched, setIsTouched] = useState(false);
+
+  const hasError = externalError || (required && (isTouched || triggerValidation) && internalSelected.length === 0);
+
+  const errorCallback = () => {
+    return {
+      validationError: hasError || (internalSelected.length === 0 && required),
+      validationErrorMessage: errorMessage || (internalSelected.length === 0 && required ? 'Selection is required' : undefined),
+    };
+  };
+
+  useEffect(() => {
+    if (inputHandler) {
+      inputHandler.register(instanceId, errorCallback);
+    }
+
+    return () => {
+      if (inputHandler) {
+        inputHandler.unregister(instanceId);
+      }
+    };
+  }, [inputHandler, instanceId, errorCallback]);
+
+  // Effect to sync internal state if parent props change
+  useEffect(() => {
+    if (Array.isArray(selected)) {
+      setInternalSelected(selected);
+    }
+  }, [selected]);
+
+
+  const handleSelection = (value: string | number) => {
+    let newSelection: (string | number)[] = [];
+
+    if (isRadio) {
+      if (internalSelected.includes(value)) {
+        newSelection = [];
+      } else {
+        newSelection = [value];
+      }
+    } else {
+      // Logic: Multi-select toggle
+      // eslint-disable-next-line no-lonely-if
+      if (internalSelected.includes(value)) {
+        // Remove item (Immutable way)
+        newSelection = internalSelected.filter((item) => item !== value);
+      } else {
+        // Add item (Immutable way)
+        newSelection = [...internalSelected, value];
+      }
+    }
+
+    // Update Internal State
+    setInternalSelected(newSelection);
+
+    // Trigger external onChange
+    if (onChange) {
+      // If radio, usually parents expect a single value, if multi, an array.
+      // We pass the structure based on the mode.
+      onChange(isRadio ? newSelection[0] || null : newSelection);
+    }
+  };
+
+  const handleBlur = (e: FocusEvent<HTMLDivElement>) => {
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      setIsTouched(true);
+    }
+  };
+
+  const handleOptionClick = (e: React.SyntheticEvent, value: string | number) => {
+    e.preventDefault();
+
+    if (disabled) return;
+
+    handleSelection(value);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>, value: string | number) => {
+    if (disabled) return;
+    // 'Enter' or ' ' (Spacebar) are standard for activating buttons
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault(); // Prevent scrolling when pressing Space
+      handleSelection(value);
+    }
+  };
+
+  const getOptionContainer = (option: MultiPickerOption) => {
+    const isSelected = internalSelected.includes(option.value);
+
+    // Dynamic Styles
+    const paperStyle: React.CSSProperties = {
+      textAlign: 'center',
+      padding: '8px 16px',
+      cursor: 'pointer',
+      transition: 'all 0.2s ease',
+      border: 'none',
+      ...style,
+    };
+
+    // Styling logic for Selection
+    if (isSelected) {
+      paperStyle.backgroundColor = theme.blue[500];
+    }
+
+    // Styling logic for Error (Overrides default border, but maybe not selection fill)
+    if (hasError && !isSelected) {
+      paperStyle.color = theme.error.main;
+    }
+
+    if (disabled) {
+      paperStyle.color = theme.text.disabled;
+      paperStyle.pointerEvents = 'none';
+    }
+
+    return (
+      <Paper
+        key={option.value} // Always need a key for map
+        hover = {!disabled}
+        style={paperStyle}
+        tabIndex={0} // Allows the element to be focused via Tab
+        onClick={(e) => handleOptionClick(e, option.value)}
+        onKeyDown={(e) => handleKeyDown(e, option.value)}
+      >
+        <Typography type="body1" style={{ color: 'inherit' }}>
+           {option.label}
+        </Typography>
+      </Paper>
+    );
+  };
+
+  return (
+    <div
+      onBlur={handleBlur}
+    >
+      {/* Label with Required Asterisk */}
+      {label && (
+        <Typography type="caption" style={{ color: hasError ? theme.error.main : theme.text.secondary }}>
+          {label} {/* required && <span style={{ color: showError ? theme.error.main : theme.text.secondary }}>*</span> */}
+        </Typography>
+      )}
+
+      {/* Option Containers */}
+      <Columns numberOfColumns={numberOfColumns} style = {{ gap: 10 }}>
+        {options.map((option) => getOptionContainer(option))}
+      </Columns>
+
+      {/* Error Message -- keep space so screen does not bounce */}
+      {showError && <div style={{ height: 20, marginTop: 4 }}>
+        {hasError && errorMessage && (
+          <Typography type="caption" style={{ color: theme.error.main }}>
+            {errorMessage}
+          </Typography>
+        )}
+      </div>}
+    </div>
+  );
+};
+
+export default MultiPicker;
+

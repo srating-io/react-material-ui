@@ -1,0 +1,85 @@
+
+'use client';
+
+import { useTheme } from '../contexts/themeContext.tsx';
+import React from 'react';
+import Typography from '../text/Typography.tsx';
+
+import { Objector, Style } from '@esmalley/ts-utils';
+
+
+/**
+ * Tile component
+ */
+const Tile = (
+  {
+    icon,
+    primary,
+    secondary,
+    style = {},
+    iconStyle = {},
+    buttons = [],
+    onClick,
+  }:
+  {
+    icon?: React.JSX.Element;
+    primary: string;
+    secondary?: string;
+    style?: React.CSSProperties & {
+      '&:hover'?: React.CSSProperties
+    };
+    iconStyle?: React.CSSProperties;
+    buttons?: React.JSX.Element[];
+    onClick?: (e: React.MouseEvent) => void;
+  },
+) => {
+  const theme = useTheme();
+
+  const containerStyle = Objector.extender(
+    {
+      margin: '5px 0px',
+    },
+    style,
+  );
+
+  const iconContainerStyle = Objector.extender(
+    {
+      display: 'flex',
+      color: theme.success.main,
+      marginRight: 10,
+    },
+    iconStyle,
+  );
+
+  const subContainerStyle = {
+    display: 'flex',
+    alignItems: 'center',
+  };
+
+  if (onClick) {
+    containerStyle.cursor = 'pointer';
+    containerStyle['&:hover'] = {
+      backgroundColor: theme.action.hover,
+    };
+  }
+
+
+  return (
+    <div className = {Style.getStyleClassName(containerStyle)} onClick = {onClick}>
+      <div style = {{ display: 'flex', justifyContent: 'space-between' }}>
+        <div className = {Style.getStyleClassName(subContainerStyle)}>
+          {icon ? <div className = {Style.getStyleClassName(iconContainerStyle)}>{icon}</div> : ''}
+          <div>
+            <div><Typography type = 'body1'>{primary}</Typography></div>
+            {secondary ? <div><Typography type = 'caption' style = {{ color: theme.text.secondary, fontStyle: 'italic' }}>{secondary}</Typography></div> : ''}
+          </div>
+        </div>
+        <div className = {Style.getStyleClassName(subContainerStyle)}>
+          {buttons}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Tile;
