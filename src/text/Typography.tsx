@@ -34,7 +34,7 @@ interface TypographyBaseProps<T extends TypographyType> {
   children: React.ReactNode;
   type: T;
   style?: React.CSSProperties | Record<string, unknown>;
-  ref?: React.RefObject<TypographyElementType<T> | null | undefined>;
+  ref?: React.RefObject<TypographyElementType<T> | null>;
 }
 
 /**
