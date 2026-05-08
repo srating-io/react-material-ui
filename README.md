@@ -18,14 +18,6 @@ Clone this repository and install the dependencies:
 npm install
 ```
 
-### Development
-
-To start the development server:
-
-```bash
-npm run dev
-```
-
 The application will be available at [http://localhost:3002](http://localhost:3002).
 
 ### Building and Running

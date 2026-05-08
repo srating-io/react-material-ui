@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { useTheme } from '../contexts/themeContext.tsx';
 import { Style } from '@esmalley/ts-utils';
 
@@ -57,14 +58,9 @@ type TypographyProps =
   // For tags that map to 'span'
   | (TypographyBaseProps<'caption' | 'overline'> & React.ComponentPropsWithoutRef<'span'>);
 
-export const Typography = (
-  {
-    children,
-    type,
-    style = {},
-    ref,
-    ...props
-  }: TypographyProps,
+export const Typography = React.forwardRef(<T extends TypographyType>(
+  { children, type, style = {}, ...props }: Omit<TypographyProps, 'ref'>,
+  ref: React.ForwardedRef<HTMLElement>,
 ) => {
   const theme = useTheme();
 
@@ -182,9 +178,9 @@ export const Typography = (
   const Tag = (types[type] || 'p') as React.ElementType; // Ensure a default fallback
 
   return (
-    <Tag className ={Style.getStyleClassName(cStyle)} ref = {ref} {...props}>
+    <Tag className ={Style.getStyleClassName(cStyle)} ref={ref} {...props}>
       {children}
     </Tag>
   );
-};
+});
 
