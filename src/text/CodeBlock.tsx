@@ -1,10 +1,11 @@
-import { Objector, toaster } from '@esmalley/ts-utils';
+import { Objector } from '@esmalley/ts-utils';
 import { useTheme } from '../contexts/themeContext.tsx';
 import { Paper } from '../container/Paper.tsx';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { IconButton } from '../buttons/IconButton.tsx';
 import ContentCopyIcon from '@esmalley/react-material-icons/ContentCopy';
 import { Tooltip } from '../overlay/Tooltip.tsx';
+import { getToaster } from '../overlay/Toast.tsx';
 
 type SupportedLang = 'js' | 'ts' | 'sh' | 'py';
 
@@ -49,10 +50,10 @@ export const CodeBlock = (
     try {
       await navigator.clipboard.writeText(cleanCode);
       setCopied(true);
-      toaster.add('Copied!', 'success');
+      getToaster().add('Copied!', 'success');
       setTimeout(() => setCopied(false), 2000); // Reset after 2s
     } catch (err) {
-      toaster.add('Failed to copy!', 'error');
+      getToaster().add('Failed to copy!', 'error');
       console.error('Failed to copy!', err);
     }
   };

@@ -12,6 +12,10 @@ import CheckCircleOutlineIcon from '@esmalley/react-material-icons/CheckCircleOu
 import { Themes, useTheme } from '../contexts/themeContext.tsx';
 import { Objector, Style, toaster, ToastItem } from '@esmalley/ts-utils';
 
+export const getToaster = () => {
+  return toaster;
+};
+
 
 export const Toast = () => {
   const theme = useTheme();
@@ -21,7 +25,7 @@ export const Toast = () => {
 
   useEffect(() => {
     // Subscribe to state changes in the manager
-    const unsubscribe = toaster.subscribe((updatedToasts) => {
+    const unsubscribe = getToaster().subscribe((updatedToasts) => {
       setToasts([...updatedToasts]); // Create a new reference to trigger re-render
     });
     return unsubscribe;
@@ -34,7 +38,7 @@ export const Toast = () => {
   const onAnimationEnd = (id: number, isExiting: boolean) => {
     if (isExiting) {
       // Once the fade-out animation finishes, remove it from the manager
-      toaster.remove(id);
+      getToaster().remove(id);
       setExiting((prev) => {
         const next = new Set(prev);
         next.delete(id);
@@ -136,7 +140,7 @@ export const Toast = () => {
             // Trigger the final removal when animation finishes
             onAnimationEnd={() => {
               if (isExiting) {
-                toaster.remove(t.id);
+                getToaster().remove(t.id);
               }
             }}
           >
