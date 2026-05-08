@@ -27,11 +27,14 @@ const TYPES_TO_TAGS = {
 // Extract the valid 'type' keys
 type TypographyType = keyof typeof TYPES_TO_TAGS;
 
+type TypographyElementType<T extends TypographyType> = HTMLElementTagNameMap[typeof TYPES_TO_TAGS[T]];
+
 // Define base props for all Typography variants
-interface TypographyBaseProps {
+interface TypographyBaseProps<T extends TypographyType> {
   children: React.ReactNode;
-  type: TypographyType;
+  type: T;
   style?: React.CSSProperties | Record<string, unknown>;
+  ref?: React.RefObject<TypographyElementType<T>>;
 }
 
 /**
@@ -40,25 +43,26 @@ interface TypographyBaseProps {
  * This uses a discriminated union to get correct tag-specific props.
  */
 type TypographyProps =
-  | (TypographyBaseProps & { type: 'a' } & React.ComponentPropsWithoutRef<'a'>)
-  | (TypographyBaseProps & { type: 'h1' } & React.ComponentPropsWithoutRef<'h1'>)
-  | (TypographyBaseProps & { type: 'h2' } & React.ComponentPropsWithoutRef<'h2'>)
-  | (TypographyBaseProps & { type: 'h3' } & React.ComponentPropsWithoutRef<'h3'>)
-  | (TypographyBaseProps & { type: 'h4' } & React.ComponentPropsWithoutRef<'h4'>)
-  | (TypographyBaseProps & { type: 'h5' } & React.ComponentPropsWithoutRef<'h5'>)
-  | (TypographyBaseProps & { type: 'h6' } & React.ComponentPropsWithoutRef<'h6'>)
+  | (TypographyBaseProps<'a'> & React.ComponentPropsWithoutRef<'a'>)
+  | (TypographyBaseProps<'h1'> & React.ComponentPropsWithoutRef<'h1'>)
+  | (TypographyBaseProps<'h2'> & React.ComponentPropsWithoutRef<'h2'>)
+  | (TypographyBaseProps<'h3'> & React.ComponentPropsWithoutRef<'h3'>)
+  | (TypographyBaseProps<'h4'> & React.ComponentPropsWithoutRef<'h4'>)
+  | (TypographyBaseProps<'h5'> & React.ComponentPropsWithoutRef<'h5'>)
+  | (TypographyBaseProps<'h6'> & React.ComponentPropsWithoutRef<'h6'>)
   // For tags that map to 'h6' but use a different 'type'
-  | (TypographyBaseProps & { type: 'subtitle1' | 'subtitle2' } & React.ComponentPropsWithoutRef<'h6'>)
+  | (TypographyBaseProps<'subtitle1' | 'subtitle2'> & React.ComponentPropsWithoutRef<'h6'>)
   // For tags that map to 'p'
-  | (TypographyBaseProps & { type: 'body1' | 'body2' | 'inherit' } & React.ComponentPropsWithoutRef<'p'>)
+  | (TypographyBaseProps<'body1' | 'body2' | 'inherit'> & React.ComponentPropsWithoutRef<'p'>)
   // For tags that map to 'span'
-  | (TypographyBaseProps & { type: 'caption' | 'overline' } & React.ComponentPropsWithoutRef<'span'>);
+  | (TypographyBaseProps<'caption' | 'overline'> & React.ComponentPropsWithoutRef<'span'>);
 
 export const Typography = (
   {
     children,
     type,
     style = {},
+    ref,
     ...props
   }: TypographyProps,
 ) => {
@@ -178,7 +182,7 @@ export const Typography = (
   const Tag = (types[type] || 'p') as React.ElementType; // Ensure a default fallback
 
   return (
-    <Tag className ={Style.getStyleClassName(cStyle)} {...props}>
+    <Tag className ={Style.getStyleClassName(cStyle)} ref = {ref} {...props}>
       {children}
     </Tag>
   );
