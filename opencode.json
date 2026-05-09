@@ -1,0 +1,22 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "lsp": true,
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "gemma4-26b-256k-context": {
+          "name": "gemma 4 26b 256k context",
+          "contextWindow": 262144
+        }
+      }
+    }
+  },
+  "permission": {
+    "edit": "allow",
+    "read": "allow"
+  }
+}

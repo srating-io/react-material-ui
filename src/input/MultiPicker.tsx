@@ -6,7 +6,7 @@ import { Columns } from '../layout/Columns.tsx';
 import { Typography } from '../text/Typography.tsx';
 import { Paper } from '../container/Paper.tsx';
 import { FocusEvent, useEffect, useMemo, useState } from 'react';
-import { Inputs } from 'src/input/Inputs.ts';
+import { Inputs } from '../input/Inputs.ts';
 
 export type MultiPickerOption = {
   label: string;

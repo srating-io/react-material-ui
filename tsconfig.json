@@ -7,7 +7,6 @@
     "allowImportingTsExtensions": true,
     "jsx": "preserve",
     "strict": true,
-    "baseUrl": ".",
     "noEmit": true,
     "types": ["node", "jest"],
   },
