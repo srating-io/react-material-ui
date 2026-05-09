@@ -23,7 +23,7 @@ export const Columns = (
   const mobileStyle = {
     display: 'flex',
     flexDirection: 'column',
-    gap: '0px',
+    gap: '5px',
     width: '100%',
   };
 

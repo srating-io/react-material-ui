@@ -87,6 +87,33 @@ npm run build
 This process uses `esbuild` to generate both ESM and CJS bundles.
 
 
+## Working on this project
+This is indended to be worked on in tandum with [react-material-ui-docs](https://github.com/srating-io/react-material-ui-docs). The docs page will be the place to test and develop new feature for this package.
+
+Assuming both repo are installed and set up, to link them and develop do this:
+
+In `react-material-ui`
+```bash
+npm link
+```
+
+In `react-material-ui-docs`
+```bash
+npm link @esmalley/react-material-ui
+```
+
+In `react-material-ui`
+```bash
+npm run watch
+```
+
+In `react-material-ui-docs`
+```bash
+npm run dev
+```
+
+The application will be available at [http://localhost:3002](http://localhost:3002).
+
 ## License
 
 This project is licensed under the Apache-2.0 License.
