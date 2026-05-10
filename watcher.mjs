@@ -2,7 +2,7 @@
 /* eslint-disable no-restricted-syntax */
 
 import { watch as nativeWatch, rmSync } from 'fs';
-import { exec } from 'child_process';
+import { exec, spawn } from 'child_process';
 import { promisify } from 'util';
 import { getBuildConfig, createBuildContexts } from './build.mjs';
 
@@ -16,6 +16,26 @@ async function startWatcher() {
   } catch (err) {
     console.warn('Could not clean dist directory:', err.message);
   }
+
+  console.log('⌨️  Starting background TypeScript compiler (tsc)...');
+  const tscProcess = spawn(
+    'npx',
+    ['tsc', '-p', 'tsconfig.build.json', '--emitDeclarationOnly', '--outDir', 'dist/types', '--watch', '--preserveWatchOutput'],
+    {
+      shell: true,
+      stdio: 'inherit', // This pipes tsc output/errors directly to your terminal
+    },
+  );
+
+  // Clean up the background tsc process when this watcher process exits
+  process.on('SIGINT', () => {
+    tscProcess.kill();
+    process.exit();
+  });
+  process.on('SIGTERM', () => {
+    tscProcess.kill();
+    process.exit();
+  });
 
   console.log('📦 Initializing esbuild contexts from build.mjs...');
   const sharedConfig = await getBuildConfig();
