@@ -1,6 +1,6 @@
 {
   "name": "@esmalley/react-material-ui",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "private": false,
   "type": "module",
   "main": "./dist/esm/index.js",
@@ -9,11 +9,11 @@
     "dist"
   ],
   "scripts": {
-    "clean": "rm -rf dist",
+    "clean": "node -e \"const fs = require('fs'); fs.rmSync('dist', { recursive: true, force: true });\"",
     "prebuild": "node scripts/generate-exports.js",
     "build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly --outDir dist/types",
     "build:js": "node build.mjs",
-    "watch": "node build.mjs --watch",
+    "watch": "node watcher.mjs",
     "build": "npm run clean && npm run build:types && npm run build:js && npm run fix:cjs",
     "fix:cjs": "node -e \"require('fs').writeFileSync('dist/cjs/package.json', JSON.stringify({type:'commonjs'}))\"",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
@@ -76,11 +76,22 @@
   "keywords": [],
   "author": "Evan Smalley",
   "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
   },
   "peerDependencies": {
     "@esmalley/ts-utils": "^6.2.7",
-    "@esmalley/react-material-icons": "^4.0.2"
+    "@esmalley/react-material-icons": "^4.0.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@esmalley/ts-utils": {
+      "optional": false
+    },
+    "react": {
+      "optional": false
+    },
+    "react-dom": {
+      "optional": false
+    }
   }
 }
