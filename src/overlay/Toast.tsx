@@ -17,7 +17,14 @@ export const getToaster = () => {
 };
 
 
-export const Toast = () => {
+export const Toast = (
+  {
+    style = {},
+  }:
+  {
+    style?: React.CSSProperties | Record<string, unknown>;
+  },
+) => {
   const theme = useTheme();
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   // Keep track of which IDs are currently fading out
@@ -52,7 +59,7 @@ export const Toast = () => {
 
   const containerStyle = {
     position: 'fixed',
-    bottom: 64,
+    bottom: 32,
     left: '50%',
     transform: 'translateX(-50%)',
     zIndex: Style.getZIndex().toast,
@@ -62,6 +69,8 @@ export const Toast = () => {
     gap: '14px',
     pointerEvents: 'none',
   };
+
+  Objector.extender(containerStyle, style);
 
   const toastStyle = {
     pointerEvents: 'auto',

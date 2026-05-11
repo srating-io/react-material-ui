@@ -4,6 +4,7 @@ import { Paper } from '../container/Paper.tsx';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { IconButton } from '../buttons/IconButton.tsx';
 import ContentCopyIcon from '@esmalley/react-material-icons/ContentCopy';
+import CheckCircleIcon from '@esmalley/react-material-icons/CheckCircle';
 import { Tooltip } from '../overlay/Tooltip.tsx';
 import { getToaster } from '../overlay/Toast.tsx';
 
@@ -166,38 +167,37 @@ export const CodeBlock = (
     return () => {
       Object.values(keys).forEach((k) => CSS.highlights.delete(k));
     };
-  }, [cleanCode, lang, keys]);
-
+  }, [cleanCode, lang, keys, instanceId]);
 
 
   return (
     <Paper elevation={5} style={pStyle}>
-      {/* Language Badge */}
-      <div style={{
-        textAlign: 'right',
-        fontSize: '10px',
-        fontWeight: 'bold',
-        textTransform: 'uppercase',
-        opacity: 0.5,
-        // color: '#fff',
-        padding: '4px 8px',
-        letterSpacing: '1px',
-      }}>
-        {lang.toUpperCase()}
+      <div style = {{ display: 'flex', justifyContent: 'end', alignItems: 'center' }}>
+        <Tooltip text = 'Copy'>
+          <IconButton
+            icon = {copied ? <CheckCircleIcon style = {{ color: theme.success.main, fontSize: 20 }} /> : <ContentCopyIcon style = {{ fontSize: 20 }} />}
+            value='copy'
+            onClick={handleCopy}
+          />
+        </Tooltip>
+
+        {/* Language Badge */}
+        <div style={{
+          fontSize: '10px',
+          fontWeight: 'bold',
+          textTransform: 'uppercase',
+          opacity: 0.5,
+          // color: '#fff',
+          padding: '4px 8px',
+          letterSpacing: '1px',
+        }}>
+          {lang.toUpperCase()}
+        </div>
       </div>
       <pre style={{ margin: 0, overflow: 'scroll' }}>
         {/* The raw text goes here. The browser paints the colors over it. */}
         <code ref={textNodeRef} style = {{ fontFamily: 'monospace' }}>{cleanCode}</code>
       </pre>
-      <div style = {{ textAlign: 'right' }}>
-        <Tooltip text = 'Copy'>
-          <IconButton
-            icon = {<ContentCopyIcon style = {{ fontSize: 20 }} />}
-            value='copy'
-            onClick={handleCopy}
-          />
-        </Tooltip>
-      </div>
     </Paper>
   );
 };

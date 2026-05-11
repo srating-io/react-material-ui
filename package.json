@@ -1,6 +1,6 @@
 {
   "name": "@esmalley/react-material-ui",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "private": false,
   "type": "module",
   "main": "./dist/esm/index.js",
@@ -78,7 +78,7 @@
   "dependencies": {
   },
   "peerDependencies": {
-    "@esmalley/ts-utils": "^6.2.7",
+    "@esmalley/ts-utils": "^6.2.8",
     "@esmalley/react-material-icons": "^4.0.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
