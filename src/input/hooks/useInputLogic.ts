@@ -86,7 +86,7 @@ export interface TextareaProps extends
     rightIcon?: React.JSX.Element;
   }
 
-export interface SelectInputProps extends BaseInputProps<string | number, HTMLDivElement> {
+export interface SelectInputProps extends BaseInputProps<string | number | null, HTMLDivElement> {
   options: SelectOption[];
   ref?: RefObject<HTMLDivElement | null>;
 }
@@ -325,7 +325,7 @@ export const useSelectInputLogic = (props: SelectInputProps) => {
   // const cloned = Objector.deepClone(props);
 
   // Select validation is usually much simpler
-  const selectValidator = useCallback((val: string | number | undefined, isTouched: boolean): ValidationResult => {
+  const selectValidator = useCallback((val: string | number | undefined | null, isTouched: boolean): ValidationResult => {
     if (required && (val === undefined || val === '') && isTouched) {
       return { isValid: false, errorMessage: 'Please select an option' };
     }
@@ -339,7 +339,7 @@ export const useSelectInputLogic = (props: SelectInputProps) => {
   }, [required, options]);
 
 
-  return useBaseInputLogic<string | number, HTMLDivElement>({
+  return useBaseInputLogic<string | number | null, HTMLDivElement>({
     ...props,
     validator: selectValidator,
   });

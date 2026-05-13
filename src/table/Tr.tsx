@@ -11,7 +11,7 @@ export const Tr = (
     ...props
   }:
   {
-    onClick?: () => void,
+    onClick?: (e: React.MouseEvent<HTMLTableRowElement>) => void,
     style?: object;
     children: React.ReactNode;
   },
@@ -27,9 +27,9 @@ export const Tr = (
     style,
   );
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent<HTMLTableRowElement>) => {
     if (onClick) {
-      onClick();
+      onClick(e);
     }
   };
 

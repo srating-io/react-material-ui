@@ -28,12 +28,18 @@ export async function createBuildContexts(sharedConfig) {
     ...sharedConfig,
     format: 'esm',
     outfile: 'dist/esm/index.js',
+    banner: {
+      js: '"use client";',
+    },
   });
 
   const cjsCtx = await esbuild.context({
     ...sharedConfig,
     format: 'cjs',
     outfile: 'dist/cjs/index.js',
+    banner: {
+      js: '"use client";',
+    },
   });
 
   return { esmCtx, cjsCtx };

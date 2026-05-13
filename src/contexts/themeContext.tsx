@@ -29,7 +29,7 @@ const ThemeProvider: React.FC<ThemeProviderProps> = ({ theme, children }) => {
 const useTheme = () => {
   const mode = useContext(ThemeContext);
   if (!mode) {
-    throw new Error('useTheme must be used within a ThemeProivder');
+    throw new Error('useTheme must be used within a ThemeProvider');
   }
 
   const theme = new Theme(mode).getTheme();

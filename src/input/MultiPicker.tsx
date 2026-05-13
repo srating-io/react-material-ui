@@ -32,33 +32,6 @@ export interface MultiPickerProps {
   numberOfColumns?: number;
 }
 
-/*
-todo put this in app
-export const getTerminologyOptions = (type: string) => {
-  const store = getStore();
-
-  const terminologies = store.getState().dictionaryReducer.terminology || {};
-
-  const options: MultiPickerOption[] = [];
-
-  for (const terminology_id in terminologies) {
-    const row = terminologies[terminology_id];
-
-    if (row.inactive) {
-      continue;
-    }
-
-    if (row.type === type) {
-      options.push({
-        label: row.name,
-        value: row.terminology_id,
-      });
-    }
-  }
-
-  return options;
-};
-*/
 
 export const MultiPicker = ({
   inputHandler,

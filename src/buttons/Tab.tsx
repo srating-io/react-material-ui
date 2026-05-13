@@ -10,7 +10,7 @@ export const Tab = (
     title,
     value,
     selected,
-    handleClick,
+    onClick,
     containerStyle = {},
     buttonStyle = {},
     ref = null,
@@ -19,7 +19,7 @@ export const Tab = (
     title: string;
     value: string|number;
     selected: boolean;
-    handleClick: (e: React.SyntheticEvent, value: string | number) => void;
+    onClick: (e: React.SyntheticEvent, value: string | number) => void;
     containerStyle?: React.CSSProperties;
     buttonStyle?: React.CSSProperties;
     ref?: RefObject<HTMLDivElement> | null;
@@ -65,7 +65,7 @@ export const Tab = (
   };
 
   return (
-    <div ref = {ref} className = {Style.getStyleClassName(cStyle)} onClick={(e) => { handleClick(e, value); }}>
+    <div ref = {ref} className = {Style.getStyleClassName(cStyle)} onClick={(e) => { onClick(e, value); }}>
       <button className = {Style.getStyleClassName(bStyle)}>
         {title}
       </button>

@@ -196,7 +196,7 @@ export const CodeBlock = (
       </div>
       <pre style={{ margin: 0, overflow: 'scroll' }}>
         {/* The raw text goes here. The browser paints the colors over it. */}
-        <code ref={textNodeRef} style = {{ fontFamily: 'monospace' }}>{cleanCode}</code>
+        <code ref={textNodeRef} style = {{ fontFamily: 'monospace', fontSize: '0.75rem' }}>{cleanCode}</code>
       </pre>
     </Paper>
   );
