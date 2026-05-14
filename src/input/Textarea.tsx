@@ -87,6 +87,7 @@ export const Textarea: React.FC<TextareaProps> = (props) => {
     fontSize: '1rem',
     resize: 'vertical',
     minHeight: '46px', // Match Input minimum
+    paddingTop: 12,
     paddingLeft,
     paddingRight: paddingLeft + (clear || rightIcon ? 24 : 0),
   };
@@ -128,19 +129,20 @@ export const Textarea: React.FC<TextareaProps> = (props) => {
   } else if (hasError) {
     labelColor = errorColor;
   }
-  // todo fix this positioning... since the height is unknown the translate is wrong... top kinda works but no animation
+
   const pStyle: React.CSSProperties = {
     position: 'absolute',
     pointerEvents: 'none',
     color: labelColor,
-    // top: isLabelActive ? 5 : 'initial',
+    top: isLabelActive ? 12 : '50%',
     transition: 'all 0.3s ease-out',
     transformOrigin: 'top left',
     transform: isLabelActive
       ? 'translate(0, -100%) scale(0.75)' // Lift and shrink
-      : 'translate(0, 0) scale(1)', // Stay put
+      : 'translate(0, -50%) scale(1)', // Stay put
     margin: `0px 16px 0px ${paddingLeft}px`,
   };
+
 
   if (isLabelActive && variant === 'outlined') {
     pStyle.backgroundColor = (
