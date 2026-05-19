@@ -70,7 +70,7 @@ export const Textarea: React.FC<TextareaProps> = (props) => {
   const iconLeft = icon ? 8 : 0;
 
   if (variant === 'standard' && !icon) {
-    paddingLeft -= 8;
+    paddingLeft = 0;
   }
 
   const inputStyle: React.CSSProperties & {

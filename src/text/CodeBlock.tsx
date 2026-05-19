@@ -68,7 +68,7 @@ export const CodeBlock = (
 
   const pStyle: Record<string, unknown> = {
     color: theme.mode === 'dark' ? theme.text.primary : '#fff',
-    padding: '16px',
+    padding: '8px 16px 16px 16px',
     borderRadius: '8px',
     overflow: 'hidden',
     width: '100%',

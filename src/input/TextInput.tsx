@@ -69,9 +69,11 @@ export const TextInput: React.FC<TextInputProps> = (props) => {
 
   let paddingLeft = (icon ? 40 : 16);
   const iconLeft = icon ? 8 : 0;
+  // standard variant has padding top to help make it look more aligned... first because the 2px border bottom + without the box to see container it looks too close to label
+  const paddingTop = variant === 'standard' ? 8 : 0;
 
   if (variant === 'standard' && !icon) {
-    paddingLeft -= 8;
+    paddingLeft = 0;
   }
 
   const inputStyle: React.CSSProperties & {
@@ -88,6 +90,7 @@ export const TextInput: React.FC<TextInputProps> = (props) => {
     fontSize: '1rem',
     paddingLeft,
     paddingRight: paddingLeft + (clear || rightIcon ? 24 : 0),
+    paddingTop,
   };
 
   if (variant === 'filled') {

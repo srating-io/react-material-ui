@@ -104,9 +104,11 @@ export const Select: React.FC<SelectInputProps> = (props) => {
 
   let paddingLeft = (icon ? 40 : 16);
   const iconLeft = icon ? 8 : 0;
+  // standard variant has padding top to help make it look more aligned... first because the 2px border bottom + without the box to see container it looks too close to label
+  const paddingTop = variant === 'standard' ? 8 : 0;
 
   if (variant === 'standard' && !icon) {
-    paddingLeft -= 8;
+    paddingLeft = 0;
   }
 
   const height = 46;
@@ -125,6 +127,7 @@ export const Select: React.FC<SelectInputProps> = (props) => {
     backgroundColor: 'transparent',
     borderRadius: variant === 'outlined' ? 4 : 0,
     fontSize: '1rem',
+    paddingTop,
     paddingLeft,
     paddingRight: paddingLeft + (clear ? 24 : 0),
     cursor: disabled ? 'not-allowed' : 'pointer',
