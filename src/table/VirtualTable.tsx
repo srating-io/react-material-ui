@@ -41,6 +41,7 @@ export type TableColumn = {
   getTooltip?: () => string; // todo make required when prop is deprecated
   getDisplayValue?: (row: object, side: string) => string | number | unknown;
   getValue?: (row: object, side: string) => string | number | unknown;
+  getViews?: () => string[]; // todo make required when prop is deprecated
 }
 
 
