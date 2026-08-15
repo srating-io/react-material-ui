@@ -1,6 +1,6 @@
 {
   "name": "@esmalley/react-material-ui",
-  "version": "1.2.4",
+  "version": "1.3.0",
   "private": false,
   "type": "module",
   "main": "./dist/esm/index.js",

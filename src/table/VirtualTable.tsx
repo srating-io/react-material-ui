@@ -17,14 +17,10 @@ import { Objector, Sorter, ThemeType } from '@esmalley/ts-utils';
 export type TableColumn = {
   id: string;
   numeric: boolean;
-  label: string; // todo deprecate, replace with getLabel()
-  alt_label?: string; // todo deprecate, replace with getLabel() some day, but for now keep separate
-  tooltip: string; // todo deprecate, replace with getTooltip()
   sticky?: boolean;
   disabled?: boolean;
   sort?: 'lower' | 'higher';
   organization_ids: string[];
-  views: string[];
   graphable: boolean;
   widths?: {
     [breakpoint: string]: number;
@@ -36,12 +32,12 @@ export type TableColumn = {
   compareType?: string;
   loading?: boolean;
   locked?: boolean;
-  getLabel?: () => string; // todo make required when prop is deprecated
-  getAltLabel?: () => string; // todo make required when prop is deprecated
-  getTooltip?: () => string; // todo make required when prop is deprecated
+  getLabel: () => string;
+  getAltLabel?: () => string;
+  getTooltip: () => string;
   getDisplayValue?: (row: object, side: string) => string | number | unknown;
   getValue?: (row: object, side: string) => string | number | unknown;
-  getViews?: () => string[]; // todo make required when prop is deprecated
+  getViews: () => string[];
 }
 
 
@@ -391,15 +387,15 @@ export const VirtualTable = <T extends object>({
             tdStyle.fontSize = '13px';
           }
 
-          let label = headCell.getLabel ? headCell.getLabel() : headCell.label;
+          let label = headCell.getLabel();
 
-          if (useAlternateLabel && (headCell.getAltLabel || headCell.alt_label)) {
-            label = headCell.getAltLabel ? headCell.getAltLabel() : headCell.alt_label as string;
+          if (useAlternateLabel && headCell.getAltLabel) {
+            label = headCell.getAltLabel();
           }
 
 
           return (
-            <Tooltip key={headCell.id} position = 'top' text={headCell.getTooltip ? headCell.getTooltip() : headCell.tooltip}>
+            <Tooltip key={headCell.id} position = 'top' text={headCell.getTooltip()}>
               <Th
                 style = {tdStyle}
                 key={headCell.id}
