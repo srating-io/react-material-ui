@@ -122,6 +122,7 @@ export const Menu = (
     right: 0,
     bottom: 0,
     zIndex: 1300,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
     // transition: 'background-color 285ms cubic-bezier(0.4, 0, 0.2, 1)',
   };
 
