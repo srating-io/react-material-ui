@@ -26,7 +26,7 @@ const ThemeProvider: React.FC<ThemeProviderProps> = ({ theme, children }) => {
 };
 
 // Create a custom hook for using the context
-const useTheme = () => {
+const useTheme = (): ReturnType<Theme['getTheme']> => {
   const mode = useContext(ThemeContext);
   if (!mode) {
     throw new Error('useTheme must be used within a ThemeProvider');

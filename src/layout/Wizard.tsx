@@ -114,7 +114,9 @@ export const Wizard = (
 
     Kontororu.addEventListener('next', handler);
 
-    return () => Kontororu.removeEventListener('next', handler);
+    return () => {
+      Kontororu.removeEventListener('next', handler);
+    };
   }, [Kontororu]);
 
   const handleNext = () => {
