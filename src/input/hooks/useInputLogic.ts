@@ -220,7 +220,12 @@ const useBaseInputLogic = <V = Value, T extends HTMLElement = HTMLElement>(props
     if (onClickProp) {
       onClickProp(e);
     }
-  }, [value, required]);
+    // isOpen and onClickProp are read above and must be listed. Without isOpen the
+    // callback kept a stale value whenever the popup was closed through
+    // handleClose (outside click, Tab) rather than through this handler, so the
+    // next click computed setIsOpen(false) on an already-closed menu and it would
+    // not reopen.
+  }, [value, required, isOpen, onClickProp]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Tab' && isOpen) {

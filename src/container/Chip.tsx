@@ -81,6 +81,13 @@ export const Chip = (
     if (onClick) {
       onClick(e, value);
     }
+  };
+
+  // Deletion belongs to the cancel icon. This handler used to run from the
+  // container alongside onClick, so a chip given both props deleted itself when
+  // the user clicked its label.
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
 
     if (onDelete) {
       onDelete(e, value);
@@ -100,7 +107,7 @@ export const Chip = (
   return (
     <div className={Style.getStyleClassName(cStyle)} onClick={handleClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <Typography style = {textStyle} type = 'caption'>{title}</Typography>
-      {onDelete ? <div style = {{ display: 'flex', marginLeft: '5px' }}><CancelIcon style = {{ fontSize: '20px' }} /></div> : ''}
+      {onDelete ? <div style = {{ display: 'flex', marginLeft: '5px' }} onClick={handleDelete}><CancelIcon style = {{ fontSize: '20px' }} /></div> : ''}
     </div>
   );
 };

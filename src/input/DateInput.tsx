@@ -116,7 +116,11 @@ export const DateInput: React.FC<DateInputProps> = (props) => {
   const [calAncor, setCalAncor] = useState<HTMLElement | null>(null);
   const calendarRef = useRef<HTMLDivElement | null>(null);
   const skipOpenRef = useRef(false);
-  const textRef = ref || useRef<HTMLInputElement | null>(null);
+  // `useRef` is called unconditionally — `ref || useRef(...)` skips the hook when
+  // a `ref` is supplied, so the hook count changes if a parent starts or stops
+  // passing one.
+  const fallbackTextRef = useRef<HTMLInputElement | null>(null);
+  const textRef = ref || fallbackTextRef;
 
   // Input string state (what the user sees)
   const [inputValue, setInputValue] = useState(selectedDate ? Dates.format(selectedDate, displayFormat) : '');
@@ -148,8 +152,16 @@ export const DateInput: React.FC<DateInputProps> = (props) => {
         setInternalError(true);
         setInternalErrorMessage('Invalid date');
       }
+    } else {
+      // A controlled parent setting `value` back to null or '' has to actually
+      // clear the field; without this the input keeps displaying a date the
+      // parent believes it removed.
+      setSelectedDate(null);
+      setInputValue('');
+      setInternalError(false);
+      setInternalErrorMessage('');
     }
-  }, [valueProp, minDate, maxDate]);
+  }, [valueProp, minDate, maxDate, displayFormat]);
 
 
 

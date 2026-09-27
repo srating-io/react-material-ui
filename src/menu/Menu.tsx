@@ -370,8 +370,11 @@ export const Menu = (
 
     if (e.key === 'Enter') {
       e.preventDefault();
-      if (options[activeIndex].onSelect) {
-        options[activeIndex].onSelect(options[activeIndex]);
+      // activeIndex is -1 until the user arrows into the list, and resets to -1
+      // whenever options change, so there may be nothing highlighted yet.
+      const activeOption = activeIndex >= 0 ? options[activeIndex] : undefined;
+      if (activeOption && activeOption.onSelect) {
+        activeOption.onSelect(activeOption);
       }
     }
 

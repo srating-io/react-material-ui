@@ -227,7 +227,19 @@ export const Calendar = (
   // This effect ensures that if the *parent's* `value` prop changes,
   // we navigate to that month if it's different and reset to day view.
   useEffect(() => {
-    if (value && Dates.getStartOfDay(value).getMonth() !== currentMonth.getMonth()) {
+    if (!value) {
+      return;
+    }
+
+    const nextMonth = Dates.getStartOfDay(value);
+
+    // Compare the year as well as the month. Comparing months alone meant
+    // moving `value` from 2024-01-15 to 2025-01-15 looked like no change, and
+    // the calendar stayed on January 2024 with no selected day in view.
+    if (
+      nextMonth.getMonth() !== currentMonth.getMonth() ||
+      nextMonth.getFullYear() !== currentMonth.getFullYear()
+    ) {
       setCurrentMonth(Dates.getStartOfDay(new Date(value)));
       setViewMode('day');
     }

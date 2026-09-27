@@ -107,9 +107,18 @@ export const Wizard = (
     }
   }, [currentStep, nextStep]);
 
+  // Kontororu is a module-level singleton, so this dependency never changes and
+  // the registered handler held on to the first render's handleNext — closed over
+  // currentStep 0. Firing 'next' therefore always validated step 0 and the bus
+  // could not advance the wizard past step 1. Go through a ref that is kept
+  // pointing at the current handleNext instead.
+  const handleNextRef = useRef<(() => void) | null>(null);
+
   useEffect(() => {
     const handler = () => {
-      handleNext();
+      if (handleNextRef.current) {
+        handleNextRef.current();
+      }
     };
 
     Kontororu.addEventListener('next', handler);
@@ -138,6 +147,11 @@ export const Wizard = (
       onSave();
     }
   };
+
+  // Keep the bus handler pointing at the latest closure, after every commit.
+  useEffect(() => {
+    handleNextRef.current = handleNext;
+  });
 
   const handleBack = () => {
     const currentStepObj = steps[currentStep];

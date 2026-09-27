@@ -77,12 +77,20 @@ export const MultiPicker = ({
     };
   }, [inputHandler, instanceId, errorCallback]);
 
-  // Effect to sync internal state if parent props change
+  // Effect to sync internal state if parent props change.
+  // Keyed on the contents rather than the array identity: a parent rendering
+  // `selected={form.tags ?? []}` hands over a brand-new array on every render, so
+  // syncing on identity re-ran after each parent render and overwrote
+  // internalSelected — undoing the user's click before the parent committed it.
+  const selectedKey = Array.isArray(selected) ? JSON.stringify(selected) : null;
+
   useEffect(() => {
-    if (Array.isArray(selected)) {
-      setInternalSelected(selected);
+    if (!Array.isArray(selected)) {
+      return;
     }
-  }, [selected]);
+
+    setInternalSelected(selected);
+  }, [selectedKey]);
 
 
   const handleSelection = (value: string | number) => {

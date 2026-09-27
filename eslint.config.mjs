@@ -13,6 +13,11 @@ import tseslint from 'typescript-eslint';
 /** @type {import('eslint').Linter.Config[]} */
 export default [
   {
+    // Flat config does not read .eslintignore, so without this the built bundle
+    // in dist/ is linted too and buries the real findings in src/.
+    ignores: ['dist/**'],
+  },
+  {
     files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
     languageOptions: {
       globals: { ...globals.browser, ...globals.node },

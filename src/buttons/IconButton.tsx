@@ -134,17 +134,16 @@ export const IconButton: React.FC<IconButtonProps> = ({
     zIndex: 1,
   };
 
+  // Keyboard activation is left to the inner <button>: the browser turns Enter
+  // and Space into a click that bubbles up to the wrapper's onClick. An
+  // additional onKeyDown firing onClick made every keyboard activation run the
+  // consumer's handler twice.
   return (
     <div
       ref = {ref}
       {...props}
       className = {Style.getStyleClassName(cStyle)}
       onClick={(e) => { onClick(e, value); }}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter') {
-          onClick(e, value);
-        }
-      }}
     >
       <button className = {Style.getStyleClassName(bStyle)} autoFocus = {autoFocus} disabled = {disabled}>
         {icon}

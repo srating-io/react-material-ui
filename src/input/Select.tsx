@@ -264,10 +264,22 @@ export const Select: React.FC<SelectInputProps> = (props) => {
   };
 
 
-  // convert the select option to a menu option, basically just attached the onSelect handler
-  const menuOptions: MenuOption[] = options.map((option) => {
-    return Objector.extender(option, { onSelect: handleSelect, selectable: true });
-  });
+  // convert the select option to a menu option, basically just attached the onSelect handler.
+  // This builds a new object per option rather than using Objector.extender, which
+  // mutates its target — the target here is the caller's own option object, so
+  // extending it wrote our handler into the consuming app's state.
+  const menuOptions: MenuOption[] = options.map((option) => ({
+    ...option,
+    onSelect: handleSelect,
+    selectable: true,
+  }));
+
+  // A mouse click on an unfocused select fires focus and then click, and both
+  // used to call triggerMenu — which toggles — so the menu opened and closed
+  // again on a single click. Mousedown flags the pointer case so onFocus can sit
+  // it out and let the click handler do the opening; onFocus then only covers
+  // keyboard focus.
+  const pointerFocusRef = useRef(false);
 
   const triggerMenu = useCallback((e: React.FocusEvent | React.MouseEvent) => {
     if (disabled) return;
@@ -305,11 +317,27 @@ export const Select: React.FC<SelectInputProps> = (props) => {
           // Pass through to your existing logic handler
           handlers.handleKeyDown(e);
         }}
+        onMouseDown={() => {
+          if (disabled) return;
+          pointerFocusRef.current = true;
+        }}
         onFocus={(e) => {
           if (disabled) return;
+
+          // This focus came from a mouse press; the click handler will open it.
+          if (pointerFocusRef.current) {
+            pointerFocusRef.current = false;
+            return;
+          }
+
           if (!isOpen) {
             triggerMenu(e);
           }
+        }}
+        onBlur={() => {
+          // Clear the flag so a later keyboard focus is not swallowed by a
+          // mousedown that never produced a focus event.
+          pointerFocusRef.current = false;
         }}
       >
         {label ? <Typography type='caption' style={{ color: labelColor, marginBottom: 5 }}>{label}</Typography> : ''}
