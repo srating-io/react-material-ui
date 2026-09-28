@@ -20,20 +20,22 @@ export const Button = (
     containerStyle = {},
     buttonStyle = {},
     ref = null,
+    startIcon = null,
     endIcon = null,
   }:
   {
     title: string;
     value: string|number|null|undefined;
     onClick: (e: React.SyntheticEvent, value: string | number | null | undefined) => void;
-    type?: 'standard' | 'select',
+    type?: 'standard' | 'select';
     disabled?: boolean;
     ink?: boolean;
     autoFocus?: boolean;
     containerStyle?: React.CSSProperties;
     buttonStyle?: React.CSSProperties;
     ref?: RefObject<HTMLDivElement> | null;
-    endIcon?: React.JSX.Element | null
+    startIcon?: React.JSX.Element | null;
+    endIcon?: React.JSX.Element | null;
   },
 ) => {
   const theme = useTheme();
@@ -126,6 +128,7 @@ export const Button = (
   return (
     <div ref = {ref} className = {Style.getStyleClassName(cStyle)} onClick={(e) => { onClick(e, value); }}>
       <button className = {Style.getStyleClassName(bStyle)} autoFocus = {autoFocus} disabled = {disabled} tabIndex={0}>
+        {startIcon || ''}
         {title}
         {endIconInternal || ''}
       </button>
