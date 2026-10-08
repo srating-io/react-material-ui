@@ -100,6 +100,7 @@ export const Menu = (
   const menuRootRef = useRef<HTMLElement | null>(null);
   const menuContentRef = useRef<HTMLDivElement | null>(null);
 
+  const [mounted, setMounted] = useState(false);
   const [hasWidth, setHasWidth] = useState(false);
 
   // Store the actual calculated position after adjustment
@@ -194,19 +195,20 @@ export const Menu = (
 
   // Effect to handle clicks outside the menu content to close it
   useEffect(() => {
-    if (open && menuRootRef.current) {
+    const root = menuRootRef.current || (typeof document !== 'undefined' ? (document.getElementById('menu-root') || document.body) : null);
+    if (open && root) {
       // Add event listener to the document (or the overlay div)
       // We add it to the menuRoot (the portal's target) to capture events on the overlay
-      menuRootRef.current.addEventListener('mousedown', handleClickOutside);
+      root.addEventListener('mousedown', handleClickOutside);
     }
 
     // Cleanup the event listener when the component unmounts or menu closes
     return () => {
-      if (menuRootRef.current) {
-        menuRootRef.current.removeEventListener('mousedown', handleClickOutside);
+      if (root) {
+        root.removeEventListener('mousedown', handleClickOutside);
       }
     };
-  }, [open, onClose, menuRootRef, menuContentRef, anchor]);
+  }, [open, onClose, anchor]);
 
   // if the options change, reset the activeIndex
   useEffect(() => {
@@ -216,7 +218,8 @@ export const Menu = (
 
   // Effect to get the 'menu-root' DOM node once on mount
   useEffect(() => {
-    menuRootRef.current = document.getElementById('menu-root');
+    menuRootRef.current = document.getElementById('menu-root') || document.body;
+    setMounted(true);
   }, []);
 
   useEffect(() => {
@@ -309,21 +312,7 @@ export const Menu = (
   }, [open, anchor, menuRootRef, menuContentRef.current, width, anchor?.clientWidth]);
 
 
-  // Effect to handle clicks outside the menu content to close it
-  useEffect(() => {
-    if (open && menuRootRef.current) {
-      // Add event listener to the document (or the overlay div)
-      // We add it to the menuRoot (the portal's target) to capture events on the overlay
-      menuRootRef.current.addEventListener('mousedown', handleClickOutside);
-    }
 
-    // Cleanup the event listener when the component unmounts or menu closes
-    return () => {
-      if (menuRootRef.current) {
-        menuRootRef.current.removeEventListener('mousedown', handleClickOutside);
-      }
-    };
-  }, [open, onClose, menuRootRef, menuContentRef, anchor]);
 
   const getNextIndex = (current: number) => {
     const nextIndex = current + 1;
@@ -370,8 +359,11 @@ export const Menu = (
 
     if (e.key === 'Enter') {
       e.preventDefault();
-      if (options[activeIndex].onSelect) {
-        options[activeIndex].onSelect(options[activeIndex]);
+      // activeIndex is -1 until the user arrows into the list, and resets to -1
+      // whenever options change, so there may be nothing highlighted yet.
+      const activeOption = activeIndex >= 0 ? options[activeIndex] : undefined;
+      if (activeOption && activeOption.onSelect) {
+        activeOption.onSelect(activeOption);
       }
     }
 
@@ -408,9 +400,14 @@ export const Menu = (
   }, [open, onClose]);
 
   if (
-    !menuRootRef.current ||
-    !open
+    !open ||
+    !mounted
   ) {
+    return null;
+  }
+
+  const target = (menuRootRef.current || (typeof document !== 'undefined' ? (document.getElementById('menu-root') || document.body) : null)) as HTMLElement;
+  if (!target) {
     return null;
   }
 
@@ -459,34 +456,34 @@ export const Menu = (
 
             if (option.customLabel) {
               return (
-                <>
+                <React.Fragment key={option.value ?? index}>
                   {groupLabel}
                   <div key = {index} onClick={handleIt}>
                     {option.customLabel}
                   </div>
-                </>
+                </React.Fragment>
               );
             }
             return (
-              <>
+              <React.Fragment key={option.value ?? index}>
                 {groupLabel}
                 <MenuItem key = {option.value} style = {option.style || {}} onClick={handleIt} active = {activeIndex === index} disabled = {option.disabled}>
                   {option.icon ? <MenuListIcon>{option.icon}</MenuListIcon> : ''}
                   <MenuListText primary={option.label || 'Unknown'} secondary={option.secondaryLabel || undefined} />
                 </MenuItem>
-              </>
+              </React.Fragment>
             );
           })}
         </MenuList>
       </Paper>
     </div>,
-    menuRootRef.current,
+    target,
   );
 
   // return (
   //   <Plane open = {open} onClose={onClose} anchor = {anchor}>
   //     <div className={Style.getStyleClassName(overlayStyle)} {...props}>
-  //       <Paper style={paperStyle} ref = {menuContentRef} tranparency={0.95}>
+  //       <Paper style={paperStyle} ref = {menuContentRef} transparency={0.95}>
   //         {showCloseButton ? closeContainer : ''}
   //         {children}
   //       </Paper>
