@@ -14,6 +14,7 @@ export interface IconButtonProps extends Omit<HTMLAttributes<HTMLDivElement>, 'o
   value: string|number;
   onClick: (e: React.SyntheticEvent, value: string | number) => void;
   type?: 'standard' | 'circle';
+  htmlType?: 'button' | 'submit' | 'reset';
   disabled?: boolean;
   autoFocus?: boolean;
   containerStyle?: React.CSSProperties & {
@@ -29,6 +30,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
   value,
   onClick,
   type = 'standard',
+  htmlType = 'button',
   disabled = false,
   autoFocus = false,
   containerStyle = {},
@@ -140,13 +142,8 @@ export const IconButton: React.FC<IconButtonProps> = ({
       {...props}
       className = {Style.getStyleClassName(cStyle)}
       onClick={(e) => { onClick(e, value); }}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter') {
-          onClick(e, value);
-        }
-      }}
     >
-      <button className = {Style.getStyleClassName(bStyle)} autoFocus = {autoFocus} disabled = {disabled}>
+      <button type={htmlType} className = {Style.getStyleClassName(bStyle)} autoFocus = {autoFocus} disabled = {disabled}>
         {icon}
       </button>
 

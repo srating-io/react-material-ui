@@ -14,6 +14,7 @@ export const Button = (
     value,
     onClick,
     type = 'standard',
+    htmlType = 'button',
     disabled = false,
     ink = false,
     autoFocus = false,
@@ -28,6 +29,7 @@ export const Button = (
     value: string|number|null|undefined;
     onClick: (e: React.SyntheticEvent, value: string | number | null | undefined) => void;
     type?: 'standard' | 'select';
+    htmlType?: 'button' | 'submit' | 'reset';
     disabled?: boolean;
     ink?: boolean;
     autoFocus?: boolean;
@@ -127,7 +129,7 @@ export const Button = (
 
   return (
     <div ref = {ref} className = {Style.getStyleClassName(cStyle)} onClick={(e) => { onClick(e, value); }}>
-      <button className = {Style.getStyleClassName(bStyle)} autoFocus = {autoFocus} disabled = {disabled} tabIndex={0}>
+      <button type={htmlType} className = {Style.getStyleClassName(bStyle)} autoFocus = {autoFocus} disabled = {disabled} tabIndex={0}>
         {startIcon || ''}
         {title}
         {endIconInternal || ''}

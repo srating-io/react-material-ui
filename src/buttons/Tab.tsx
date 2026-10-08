@@ -66,7 +66,7 @@ export const Tab = (
 
   return (
     <div ref = {ref} className = {Style.getStyleClassName(cStyle)} onClick={(e) => { onClick(e, value); }}>
-      <button className = {Style.getStyleClassName(bStyle)}>
+      <button type="button" className = {Style.getStyleClassName(bStyle)}>
         {title}
       </button>
     </div>
