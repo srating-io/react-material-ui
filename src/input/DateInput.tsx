@@ -45,11 +45,11 @@ const to12HourTime = (date: Date) => {
 const to24Hour = (hours: number, meridiem: string) => {
   let h = hours;
 
-  if (meridiem && meridiem.toUpperCase() === 'PM' && h < 12) {
+  if (typeof meridiem === 'string' && meridiem.toUpperCase() === 'PM' && h < 12) {
     h += 12;
   }
 
-  if (meridiem && meridiem.toUpperCase() === 'AM' && h === 12) {
+  if (typeof meridiem === 'string' && meridiem.toUpperCase() === 'AM' && h === 12) {
     h = 0;
   }
 
@@ -116,7 +116,8 @@ export const DateInput: React.FC<DateInputProps> = (props) => {
   const [calAncor, setCalAncor] = useState<HTMLElement | null>(null);
   const calendarRef = useRef<HTMLDivElement | null>(null);
   const skipOpenRef = useRef(false);
-  const textRef = ref || useRef<HTMLInputElement | null>(null);
+  const fallbackTextRef = useRef<HTMLInputElement | null>(null);
+  const textRef = ref || fallbackTextRef;
 
   // Input string state (what the user sees)
   const [inputValue, setInputValue] = useState(selectedDate ? Dates.format(selectedDate, displayFormat) : '');
@@ -148,8 +149,13 @@ export const DateInput: React.FC<DateInputProps> = (props) => {
         setInternalError(true);
         setInternalErrorMessage('Invalid date');
       }
+    } else {
+      setSelectedDate(null);
+      setInputValue('');
+      setInternalError(false);
+      setInternalErrorMessage('');
     }
-  }, [valueProp, minDate, maxDate]);
+  }, [valueProp, minDate, maxDate, displayFormat]);
 
 
 
