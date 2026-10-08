@@ -1,7 +1,7 @@
 import { Objector } from '@esmalley/ts-utils';
 import { useTheme } from '../contexts/themeContext.tsx';
 import { Paper } from '../container/Paper.tsx';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { IconButton } from '../buttons/IconButton.tsx';
 import ContentCopyIcon from '@esmalley/react-material-icons/ContentCopy';
 import CheckCircleIcon from '@esmalley/react-material-icons/CheckCircle';
@@ -39,7 +39,13 @@ export const CodeBlock = (
     style?: object;
   },
 ) => {
-  const instanceId = useMemo(() => crypto.randomUUID(), []);
+  // These ids end up inside ::highlight() selectors, which are hashed into the
+  // generated class name. crypto.randomUUID() differs between the server and
+  // client render, so it produced a different class each side and hydration
+  // mismatched. useId is stable across both.
+  // The id format is a React implementation detail (`:r0:` on 18, `_R_0_` on 19),
+  // so strip anything that is not valid in a CSS custom-ident.
+  const instanceId = useId().replace(/[^a-zA-Z0-9_-]/g, '');
   const theme = useTheme();
   const textNodeRef = useRef<HTMLElement>(null);
   const [copied, setCopied] = useState(false);
