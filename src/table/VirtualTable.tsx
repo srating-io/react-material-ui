@@ -149,14 +149,36 @@ export const VirtualTable = <T extends object>({
 
   const { width } = useWindowDimensions() as Dimensions;
 
-  const sessionOrder = sessionStorageKey ? sessionStorage.getItem(`${sessionStorageKey}.ORDER`) : null;
-  const sessionOrderBy = sessionStorageKey ? sessionStorage.getItem(`${sessionStorageKey}.ORDERBY`) : null;
-
   const [scrollTop, setScrollTop] = useState(initialScrollTop);
-  const [order, setOrder] = useState<string>(sessionOrder || defaultSortOrder);
-  const [orderBy, setOrderBy] = useState<string>(sessionOrderBy || defaultSortOrderBy);
-  // Ref to the <table> element to find the scrollable parent
-  const tableRef = ref || useRef<HTMLTableElement | null>(null);
+  const [order, setOrder] = useState<string>(defaultSortOrder);
+  const [orderBy, setOrderBy] = useState<string>(defaultSortOrderBy);
+
+  // sessionStorage does not exist during a server render, and reading it while
+  // rendering would also make the server sort by the default column while the
+  // client hydrates with the stored one. Restore it after mount instead.
+  useEffect(() => {
+    if (!sessionStorageKey || typeof window === 'undefined' || !window.sessionStorage) {
+      return;
+    }
+
+    const sessionOrder = sessionStorage.getItem(`${sessionStorageKey}.ORDER`);
+    const sessionOrderBy = sessionStorage.getItem(`${sessionStorageKey}.ORDERBY`);
+
+    if (sessionOrder) {
+      setOrder(sessionOrder);
+    }
+
+    if (sessionOrderBy) {
+      setOrderBy(sessionOrderBy);
+    }
+  }, [sessionStorageKey]);
+
+  // Ref to the <table> element to find the scrollable parent.
+  // `useRef` is called unconditionally — `ref || useRef(...)` skips the hook when
+  // a `ref` is supplied, so the hook count changes if a parent starts or stops
+  // passing one.
+  const fallbackTableRef = useRef<HTMLTableElement | null>(null);
+  const tableRef = ref || fallbackTableRef;
 
 
   const sortedRows = useMemo(() => {
@@ -244,7 +266,7 @@ export const VirtualTable = <T extends object>({
 
   const handleSort = (id: string) => {
     const isAsc = orderBy === id && order === 'asc';
-    if (sessionStorageKey) {
+    if (sessionStorageKey && typeof window !== 'undefined' && window.sessionStorage) {
       sessionStorage.setItem(`${sessionStorageKey}.ORDER`, (isAsc ? 'desc' : 'asc'));
       sessionStorage.setItem(`${sessionStorageKey}.ORDERBY`, id);
     }
