@@ -78,8 +78,8 @@
   "dependencies": {
   },
   "peerDependencies": {
-    "@esmalley/ts-utils": "^7.0.0",
-    "@esmalley/react-material-icons": "^4.0.2",
+    "@esmalley/ts-utils": "^8.0.0",
+    "@esmalley/react-material-icons": "^5.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
