@@ -2,7 +2,7 @@
 
 'use client';
 
-import React, { useState, useMemo, useEffect, useCallback, RefObject, InputHTMLAttributes } from 'react';
+import React, { useState, useId, useEffect, useCallback, RefObject, InputHTMLAttributes } from 'react';
 import { Inputs } from '../Inputs.ts';
 
 export type InputVariant = 'standard' | 'outlined' | 'filled';
@@ -121,7 +121,7 @@ const useBaseInputLogic = <V = Value, T extends HTMLElement = HTMLElement>(props
     transformOnBlur,
   } = props;
 
-  const instanceId = useMemo(() => crypto.randomUUID(), []);
+  const instanceId = useId();
   const [isFocused, setIsFocused] = useState(false);
   const [internalValue, setInternalValue] = useState<V | undefined>(valueProp !== undefined ? valueProp : defaultValue);
   const [isTouched, setIsTouched] = useState(false);

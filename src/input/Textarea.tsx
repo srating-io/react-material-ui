@@ -206,7 +206,7 @@ export const Textarea: React.FC<TextareaProps> = (props) => {
           value={value}
           disabled = {disabled}
           rows={rows}
-          name = {domProps.name || crypto.randomUUID()}
+          name = {domProps.name}
           // maxLength={maxLength} use internval validation
           onChange={handlers.handleChange}
           onFocus={handlers.handleFocus}

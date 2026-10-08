@@ -205,7 +205,7 @@ export const TextInput: React.FC<TextInputProps> = (props) => {
           className={Style.getStyleClassName(inputStyle)}
           value={value}
           disabled = {disabled}
-          name = {domProps.name || crypto.randomUUID()}
+          name = {domProps.name}
           // maxLength={maxLength} use internval validation
           onChange={handlers.handleChange}
           onFocus={handlers.handleFocus}

@@ -5,7 +5,7 @@ import { useTheme } from '../contexts/themeContext.tsx';
 import { Columns } from '../layout/Columns.tsx';
 import { Typography } from '../text/Typography.tsx';
 import { Paper } from '../container/Paper.tsx';
-import { FocusEvent, useEffect, useMemo, useState } from 'react';
+import { FocusEvent, useEffect, useId, useState } from 'react';
 import { Inputs } from '../input/Inputs.ts';
 
 export type MultiPickerOption = {
@@ -50,7 +50,7 @@ export const MultiPicker = ({
   numberOfColumns = 2,
 }: MultiPickerProps) => {
   const theme = useTheme();
-  const instanceId = useMemo(() => crypto.randomUUID(), []);
+  const instanceId = useId();
 
   // Initialize state, but keep it synced with props
   const [internalSelected, setInternalSelected] = useState<(string | number)[]>(selected || []);
