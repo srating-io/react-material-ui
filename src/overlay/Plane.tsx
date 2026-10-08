@@ -5,6 +5,8 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 
 
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+
 export const Plane = (
   {
     open,
@@ -21,7 +23,12 @@ export const Plane = (
 ) => {
   const contentRef = useRef<HTMLDivElement | null>(null);
 
+  const [mounted, setMounted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const transformScale = 0.8;
 
@@ -70,7 +77,7 @@ export const Plane = (
   }, [open, onClose]);
 
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (open && contentRef.current && anchor) {
       const popoverRect = contentRef.current.getBoundingClientRect();
 
@@ -139,7 +146,12 @@ export const Plane = (
   };
 
 
-  if (!isVisible) {
+  if (!isVisible || !mounted) {
+    return null;
+  }
+
+  const target = (typeof document !== 'undefined' && (document.getElementById('menu-root') || document.body)) as HTMLElement;
+  if (!target) {
     return null;
   }
 
@@ -215,7 +227,7 @@ export const Plane = (
         {children}
       </div>
     </div>,
-    document.body,
+    target,
   );
 };
 

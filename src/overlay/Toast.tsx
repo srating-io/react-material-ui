@@ -26,11 +26,13 @@ export const Toast = (
   },
 ) => {
   const theme = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   // Keep track of which IDs are currently fading out
   const [exiting, setExiting] = useState<Set<number>>(new Set());
 
   useEffect(() => {
+    setMounted(true);
     // Subscribe to state changes in the manager
     const unsubscribe = getToaster().subscribe((updatedToasts) => {
       setToasts([...updatedToasts]); // Create a new reference to trigger re-render
@@ -54,8 +56,11 @@ export const Toast = (
     }
   };
 
-  // If no toasts, render nothing
-  if (toasts.length === 0 && exiting.size === 0) return null;
+  // If unmounted or no toasts, render nothing
+  if (!mounted || (toasts.length === 0 && exiting.size === 0)) return null;
+
+  const target = (typeof document !== 'undefined' && (document.getElementById('menu-root') || document.body)) as HTMLElement;
+  if (!target) return null;
 
   const containerStyle = {
     position: 'fixed',
@@ -143,7 +148,7 @@ export const Toast = (
 
         return (
           <Paper
-            key = {`toast-${index}`}
+            key = {t.id ?? `toast-${index}`}
             style = {tStyle}
             elevation={4}
             // Trigger the final removal when animation finishes
@@ -164,7 +169,7 @@ export const Toast = (
         );
       })}
     </div>,
-    document.body,
+    target,
   );
 };
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Paper } from '../container/Paper.tsx';
 import CloseIcon from '@esmalley/react-material-icons/Close';
@@ -27,7 +27,12 @@ export const Modal = (
   },
 ) => {
   // const theme = useTheme();
+  const [mounted, setMounted] = useState(false);
   const contentRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const zIndex = Style.getZIndex().modal;
 
@@ -104,7 +109,12 @@ export const Modal = (
   );
 
 
-  if (!open) {
+  if (!open || !mounted) {
+    return null;
+  }
+
+  const target = (typeof document !== 'undefined' && (document.getElementById('menu-root') || document.body)) as HTMLElement;
+  if (!target) {
     return null;
   }
 
@@ -161,7 +171,7 @@ export const Modal = (
         </div>
       </div>
     </div>,
-    document.body,
+    target,
   );
 };
 

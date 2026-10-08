@@ -348,11 +348,11 @@ export const Tooltip = <T extends HTMLElement>(
         // console.log(id, phase, actualDuration);
       }}>
       {childWithProps}
-      {isVisible && createPortal(
+      {isVisible && typeof document !== 'undefined' && createPortal(
         <Paper style ={baseStyles} ref = {tooltipRef}>
           {text}
         </Paper>,
-        document.body,
+        (document.getElementById('menu-root') || document.body) as HTMLElement,
       )}
       </Profiler>
     </>

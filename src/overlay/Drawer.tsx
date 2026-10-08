@@ -19,6 +19,14 @@ export const Drawer = (
     children: React.JSX.Element;
   },
 ) => {
+  // The drawer stays mounted while closed so it can transition off-screen, which
+  // means it cannot use the `if (!open) return null` guard the other overlays use.
+  // Gate on mount instead, so `document` is never touched during a server render.
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
   // Prevent background scrolling when the drawer is open
   useEffect(() => {
     if (open) {
@@ -81,6 +89,15 @@ export const Drawer = (
     containerStyle.transform = 'translateY(0)';
   }
 
+  if (!mounted) {
+    return null;
+  }
+
+  const target = (typeof document !== 'undefined' && (document.getElementById('menu-root') || document.body)) as HTMLElement;
+  if (!target) {
+    return null;
+  }
+
   return createPortal(
     <>
       <div
@@ -91,7 +108,7 @@ export const Drawer = (
         {children}
       </Paper>
     </>,
-    document.body,
+    target,
   );
 };
 
