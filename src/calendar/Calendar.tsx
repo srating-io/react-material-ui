@@ -123,16 +123,22 @@ const YearPicker = (
   const theme = useTheme();
   const scrollRef = useRef<HTMLElement>(null);
 
-  // Generate ONLY the years that fall within the Min/Max range
+  // Generate ONLY the years that fall within the Min/Max range (clamped to prevent DoS)
   const years = useMemo(() => {
-    // Use Dates utility to safely parse and extract years
-    const minYear = Dates.parse(minDate).getFullYear();
-    const maxYear = Dates.parse(maxDate).getFullYear();
+    const minParsed = minDate ? Dates.parse(minDate) : null;
+    const maxParsed = maxDate ? Dates.parse(maxDate) : null;
+
+    const minYear = minParsed && !isNaN(minParsed.getTime()) ? minParsed.getFullYear() : 1900;
+    const maxYear = maxParsed && !isNaN(maxParsed.getTime()) ? maxParsed.getFullYear() : 2100;
+
+    const startYear = Math.min(minYear, maxYear);
+    const endYear = Math.max(minYear, maxYear);
+
+    // Clamp maximum range to 200 years to prevent thread lockup / memory exhaustion
+    const safeEnd = Math.min(endYear, startYear + 200);
 
     const yearList: number[] = [];
-
-    // Loop strictly from min to max
-    for (let i = minYear; i <= maxYear; i++) {
+    for (let i = startYear; i <= safeEnd; i++) {
       yearList.push(i);
     }
 
@@ -225,11 +231,14 @@ export const Calendar = (
   const [viewMode, setViewMode] = useState('day');
 
   // This effect ensures that if the *parent's* `value` prop changes,
-  // we navigate to that month if it's different and reset to day view.
+  // we navigate to that month/year if it's different and reset to day view.
   useEffect(() => {
-    if (value && Dates.getStartOfDay(value).getMonth() !== currentMonth.getMonth()) {
-      setCurrentMonth(Dates.getStartOfDay(new Date(value)));
-      setViewMode('day');
+    if (value) {
+      const parsed = Dates.getStartOfDay(new Date(value));
+      if (!isNaN(parsed.getTime()) && (parsed.getMonth() !== currentMonth.getMonth() || parsed.getFullYear() !== currentMonth.getFullYear())) {
+        setCurrentMonth(parsed);
+        setViewMode('day');
+      }
     }
   }, [value]);
 
