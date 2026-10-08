@@ -436,7 +436,7 @@ export const Menu = (
 
   return ReactDOM.createPortal(
     <div className={Style.getStyleClassName(overlayStyle)} {...props}>
-      <Paper style={paperStyle} ref = {menuContentRef} tranparency={0.95}>
+      <Paper style={paperStyle} ref = {menuContentRef} transparency={0.95}>
         {showCloseButton ? closeContainer : ''}
         <MenuList>
           {options.map((option, index) => {

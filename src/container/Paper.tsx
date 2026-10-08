@@ -16,7 +16,7 @@ export const Paper = (
     style = {},
     children,
     ref,
-    tranparency = 0,
+    transparency = 0,
     hover = false,
     onClick,
     onKeyDown,
@@ -30,7 +30,7 @@ export const Paper = (
       '&:hover'?: React.CSSProperties
     } | Record<string, unknown>;
     children: React.ReactNode;
-    tranparency?: number;
+    transparency?: number;
     ref?: RefObject<HTMLDivElement | null>;
     hover?: boolean;
     onClick?: (e: React.SyntheticEvent) => void;
@@ -47,9 +47,9 @@ export const Paper = (
     backgroundColor = Color.lerpColor(theme.background.main, theme.grey[400], elevation / 24);
   }
 
-  if (tranparency) {
+  if (transparency) {
     const rgb = Color.hexToRgb(backgroundColor);
-    backgroundColor = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${tranparency})`;
+    backgroundColor = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${transparency})`;
   }
 
   const cStyle: React.CSSProperties & {
@@ -64,9 +64,16 @@ export const Paper = (
   };
 
   if (hover && cStyle.backgroundColor) {
-    cStyle['&:hover'] = {
-      backgroundColor: theme.mode === 'light' ? Color.alphaColor(cStyle.backgroundColor, 0.5) : Color.lighten(cStyle.backgroundColor, 0.04),
-    };
+    const bg = cStyle.backgroundColor as string;
+    if (typeof bg === 'string' && (bg.startsWith('rgba') || bg.startsWith('rgb'))) {
+      cStyle['&:hover'] = {
+        backgroundColor: theme.mode === 'light' ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.08)',
+      };
+    } else {
+      cStyle['&:hover'] = {
+        backgroundColor: theme.mode === 'light' ? Color.alphaColor(bg, 0.5) : Color.lighten(bg, 0.04),
+      };
+    }
   }
 
   const handleClick = (e: React.SyntheticEvent) => {
