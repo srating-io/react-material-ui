@@ -2,12 +2,18 @@
 
 import { useTheme } from '../contexts/themeContext.tsx';
 
+const sanitizeCssValue = (val: string | undefined): string => {
+  if (!val || typeof val !== 'string') return '';
+  return val.replace(/<\/style/gi, '');
+};
+
 export const UXBaseline = () => {
   const theme = useTheme();
+  const primaryColor = sanitizeCssValue(theme.text.primary);
+  const backgroundColor = sanitizeCssValue(theme.background.main);
 
   return (
-    <style dangerouslySetInnerHTML={{
-      __html: `
+    <style>{`
       html {
         box-sizing: border-box;
         -webkit-text-size-adjust: 100%;
@@ -20,8 +26,8 @@ export const UXBaseline = () => {
 
       body {
         margin: 0; /* Remove browser default 8px margin */
-        color: ${theme.text.primary};
-        background-color: ${theme.background.main};
+        color: ${primaryColor};
+        background-color: ${backgroundColor};
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         font-family: "Roboto", "Helvetica", "Arial", sans-serif;
@@ -45,7 +51,6 @@ export const UXBaseline = () => {
         display: block;
         max-width: 100%;
       }
-    `,
-    }} />
+    `}</style>
   );
 };
