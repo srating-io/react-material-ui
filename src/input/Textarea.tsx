@@ -203,7 +203,7 @@ export const Textarea: React.FC<TextareaProps> = (props) => {
         <textarea
           ref = {ref}
           className={Style.getStyleClassName(inputStyle)}
-          value={value}
+          value={value !== undefined && value !== null ? value : ''}
           disabled = {disabled}
           rows={rows}
           name = {domProps.name}

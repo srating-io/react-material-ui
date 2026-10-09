@@ -203,7 +203,7 @@ export const TextInput: React.FC<TextInputProps> = (props) => {
           ref = {ref}
           type='text'
           className={Style.getStyleClassName(inputStyle)}
-          value={value}
+          value={value !== undefined && value !== null ? value : ''}
           disabled = {disabled}
           name = {domProps.name}
           // maxLength={maxLength} use internval validation
