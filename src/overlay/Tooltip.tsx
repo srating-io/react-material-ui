@@ -289,7 +289,7 @@ export const Tooltip = <T extends HTMLElement>(
   const handleRef = (node: T | null) => {
     (containerRef as React.MutableRefObject<T | null>).current = node;
 
-    const childRef = (children as unknown as { ref?: React.Ref<T> }).ref ?? children.props.ref;
+    const childRef = children.props.ref ?? (children as unknown as { ref?: React.Ref<T> }).ref;
     if (typeof childRef === 'function') {
       childRef(node);
     } else if (childRef && typeof childRef === 'object' && 'current' in childRef) {
