@@ -5,7 +5,7 @@ import { useTheme } from '../contexts/themeContext.tsx';
 import { Columns } from '../layout/Columns.tsx';
 import { Typography } from '../text/Typography.tsx';
 import { Paper } from '../container/Paper.tsx';
-import { FocusEvent, useEffect, useId, useState } from 'react';
+import { FocusEvent, useCallback, useEffect, useId, useState } from 'react';
 import { Inputs } from '../input/Inputs.ts';
 
 export type MultiPickerOption = {
@@ -58,12 +58,12 @@ export const MultiPicker = ({
 
   const hasError = externalError || (required && (isTouched || triggerValidation) && internalSelected.length === 0);
 
-  const errorCallback = () => {
+  const errorCallback = useCallback(() => {
     return {
       validationError: hasError || (internalSelected.length === 0 && required),
       validationErrorMessage: errorMessage || (internalSelected.length === 0 && required ? 'Selection is required' : undefined),
     };
-  };
+  }, [hasError, internalSelected.length, required, errorMessage]);
 
   useEffect(() => {
     if (inputHandler) {
@@ -80,7 +80,15 @@ export const MultiPicker = ({
   // Effect to sync internal state if parent props change
   useEffect(() => {
     if (Array.isArray(selected)) {
-      setInternalSelected(selected);
+      setInternalSelected((prev) => {
+        if (
+          prev.length === selected.length &&
+          prev.every((val, index) => val === selected[index])
+        ) {
+          return prev;
+        }
+        return selected;
+      });
     }
   }, [selected]);
 
@@ -173,7 +181,7 @@ export const MultiPicker = ({
         key={option.value} // Always need a key for map
         hover = {!disabled}
         style={paperStyle}
-        tabIndex={0} // Allows the element to be focused via Tab
+        tabIndex={disabled ? -1 : 0} // Allows the element to be focused via Tab when not disabled
         onClick={(e) => handleOptionClick(e, option.value)}
         onKeyDown={(e) => handleKeyDown(e, option.value)}
       >
