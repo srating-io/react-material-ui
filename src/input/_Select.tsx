@@ -59,6 +59,7 @@ const Select: React.FC<SelectProps> = ({
   const instanceId = useMemo(() => crypto.randomUUID(), []);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLDivElement>(null);
+  const pointerFocusRef = useRef(false);
 
   // --- State ---
   const [isOpen, setIsOpen] = useState(false);
@@ -370,8 +371,20 @@ const Select: React.FC<SelectProps> = ({
     <div
       ref={containerRef}
       className={Style.getStyleClassName(containerStyle)}
+      onMouseDown={() => {
+        pointerFocusRef.current = true;
+      }}
+      onMouseUp={() => {
+        setTimeout(() => {
+          pointerFocusRef.current = false;
+        }, 0);
+      }}
       onKeyDown={handleKeyDown}
       onFocus={(e) => {
+        if (pointerFocusRef.current) {
+          pointerFocusRef.current = false;
+          return;
+        }
         if (!isOpen) {
           handleToggle(e);
         }

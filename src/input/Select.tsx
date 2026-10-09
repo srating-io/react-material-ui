@@ -45,6 +45,7 @@ export const Select: React.FC<SelectInputProps> = (props) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const internalRef = useRef<HTMLDivElement | null>(null);
+  const pointerFocusRef = useRef(false);
 
   // This helper ensures both the prop ref and our internal ref get the DOM node
   const setRefs = useCallback((node: HTMLDivElement | null) => {
@@ -295,6 +296,14 @@ export const Select: React.FC<SelectInputProps> = (props) => {
       <div
         className={Style.getStyleClassName(containerStyle)}
         tabIndex={disabled ? -1 : 0}
+        onMouseDown={() => {
+          pointerFocusRef.current = true;
+        }}
+        onMouseUp={() => {
+          setTimeout(() => {
+            pointerFocusRef.current = false;
+          }, 0);
+        }}
         onKeyDown={(e) => {
           if (disabled) return;
 
@@ -309,6 +318,10 @@ export const Select: React.FC<SelectInputProps> = (props) => {
         }}
         onFocus={(e) => {
           if (disabled) return;
+          if (pointerFocusRef.current) {
+            pointerFocusRef.current = false;
+            return;
+          }
           if (!isOpen) {
             triggerMenu(e);
           }
