@@ -181,7 +181,7 @@ const useBaseInputLogic = <V = Value, T extends HTMLElement = HTMLElement>(props
 
     // Apply specialized transformations (like money formatting) if provided
     let finalValue = value;
-    if (transformOnBlur && value !== undefined) {
+    if (transformOnBlur && value !== undefined && value !== null) {
       finalValue = transformOnBlur(value as V);
       if (valueProp === undefined) setInternalValue(finalValue);
       if (onChangeProp) onChangeProp(finalValue as V);
@@ -220,7 +220,7 @@ const useBaseInputLogic = <V = Value, T extends HTMLElement = HTMLElement>(props
     if (onClickProp) {
       onClickProp(e);
     }
-  }, [value, required]);
+  }, [value, required, isOpen, onClickProp]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Tab' && isOpen) {
@@ -267,6 +267,7 @@ export const useTextInputLogic = <T extends HTMLInputElement | HTMLTextAreaEleme
   }, []);
 
   const transformOnBlur = useCallback((val: string | number) => {
+    if (val === null || val === undefined) return '';
     let finalValue = val.toString();
     if (formatter === 'number') {
       finalValue = finalValue.replace(/(?!^-)[^0-9.]/g, '');
