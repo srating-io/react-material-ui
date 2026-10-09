@@ -16,7 +16,8 @@
     "watch": "node watcher.mjs",
     "build": "npm run clean && npm run build:types && npm run build:js && npm run fix:cjs",
     "fix:cjs": "node -e \"require('fs').writeFileSync('dist/cjs/package.json', JSON.stringify({type:'commonjs'}))\"",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "prepublishOnly": "npm run build"
   },
   "exports": {
@@ -56,17 +57,17 @@
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^14.5.1",
-    "@types/jest": "^30.0.0",
     "@types/react-dom": "^19.1.9",
     "esbuild": "^0.27.3",
     "eslint": "^9.22.0",
     "eslint-plugin-react": "^7.37.3",
     "eslint-plugin-react-hooks": "^5.1.0",
     "globals": "^16.0.0",
-    "ts-jest": "^29.4.6",
+    "jsdom": "^30.1.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.3",
-    "typescript-eslint": "^8.26.1"
+    "typescript-eslint": "^8.26.1",
+    "vitest": "^5.0.3"
   },
   "description": "Material UI components for react.",
   "bugs": {
@@ -75,11 +76,9 @@
   "homepage": "https://github.com/srating-io/react-material-ui#readme",
   "keywords": [],
   "author": "Evan Smalley",
-  "dependencies": {
-  },
   "peerDependencies": {
-    "@esmalley/ts-utils": "^8.0.0",
     "@esmalley/react-material-icons": "^5.0.0",
+    "@esmalley/ts-utils": "^8.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
