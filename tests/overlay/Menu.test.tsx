@@ -20,7 +20,7 @@ describe('Menu', () => {
         onClose={() => {}}
       />
     );
-    expect(screen.queryByText('Profile')).not.toBeInTheDocument();
+    expect(screen.queryByText('Profile')).toBeNull();
   });
 
   it('renders menu options inside portal when open is true', () => {
@@ -32,9 +32,9 @@ describe('Menu', () => {
         onClose={() => {}}
       />
     );
-    expect(screen.getByText('Profile')).toBeInTheDocument();
-    expect(screen.getByText('Settings')).toBeInTheDocument();
-    expect(screen.getByText('Logout')).toBeInTheDocument();
+    expect(document.body.contains(screen.getByText('Profile'))).toBe(true);
+    expect(document.body.contains(screen.getByText('Settings'))).toBe(true);
+    expect(document.body.contains(screen.getByText('Logout'))).toBe(true);
   });
 
   it('calls onSelect when an option is clicked', async () => {

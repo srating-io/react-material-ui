@@ -7,8 +7,8 @@ import { TextInput } from '../../src/input/TextInput.tsx';
 describe('TextInput', () => {
   it('renders input with label and placeholder', () => {
     render(<TextInput label="Username" placeholder="Enter username" />);
-    expect(screen.getByText('Username')).toBeInTheDocument();
-    expect(screen.getByRole('textbox')).toBeInTheDocument();
+    expect(document.body.contains(screen.getByText('Username'))).toBe(true);
+    expect(document.body.contains(screen.getByRole('textbox'))).toBe(true);
   });
 
   it('updates value and calls onChange when typing', async () => {
@@ -16,16 +16,17 @@ describe('TextInput', () => {
     const handleChange = vi.fn();
 
     render(<TextInput onChange={handleChange} />);
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole('textbox') as HTMLInputElement;
 
     await user.type(input, 'hello');
     expect(handleChange).toHaveBeenCalled();
-    expect(input).toHaveValue('hello');
+    expect(input.value).toBe('hello');
   });
 
   it('reflects controlled value prop', () => {
     render(<TextInput value="controlled text" onChange={() => {}} />);
-    expect(screen.getByRole('textbox')).toHaveValue('controlled text');
+    const input = screen.getByRole('textbox') as HTMLInputElement;
+    expect(input.value).toBe('controlled text');
   });
 
   it('displays error message when external error is passed', () => {
@@ -36,11 +37,12 @@ describe('TextInput', () => {
         showError={true}
       />
     );
-    expect(screen.getByText('Invalid email address')).toBeInTheDocument();
+    expect(document.body.contains(screen.getByText('Invalid email address'))).toBe(true);
   });
 
   it('applies disabled state to input element', () => {
     render(<TextInput disabled placeholder="Disabled field" />);
-    expect(screen.getByRole('textbox')).toBeDisabled();
+    const input = screen.getByRole('textbox') as HTMLInputElement;
+    expect(input.disabled).toBe(true);
   });
 });

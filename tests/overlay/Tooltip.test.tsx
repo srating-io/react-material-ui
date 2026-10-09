@@ -11,7 +11,7 @@ describe('Tooltip', () => {
         <button>Target Element</button>
       </Tooltip>
     );
-    expect(screen.getByRole('button', { name: /target element/i })).toBeInTheDocument();
+    expect(document.body.contains(screen.getByRole('button', { name: /target element/i }))).toBe(true);
   });
 
   it('preserves child ref on the wrapped element', () => {

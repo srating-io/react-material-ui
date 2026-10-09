@@ -8,8 +8,8 @@ describe('Tab', () => {
   it('renders tab button with title text and type="button"', () => {
     render(<Tab title="Overview" value="tab-1" selected={false} onClick={() => {}} />);
     const button = screen.getByRole('button', { name: /overview/i });
-    expect(button).toBeInTheDocument();
-    expect(button).toHaveAttribute('type', 'button');
+    expect(document.body.contains(button)).toBe(true);
+    expect(button.getAttribute('type')).toBe('button');
   });
 
   it('calls onClick with synthetic event and value when clicked', async () => {
@@ -25,6 +25,7 @@ describe('Tab', () => {
 
   it('renders correctly when selected is true', () => {
     render(<Tab title="Active Tab" value="active" selected={true} onClick={() => {}} />);
-    expect(screen.getByRole('button', { name: /active tab/i })).toBeInTheDocument();
+    const button = screen.getByRole('button', { name: /active tab/i });
+    expect(document.body.contains(button)).toBe(true);
   });
 });

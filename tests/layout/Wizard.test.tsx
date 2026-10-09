@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, act } from '../test-utils.tsx';
+import { render, screen } from '../test-utils.tsx';
 import userEvent from '@testing-library/user-event';
 import { Wizard, WizardStep } from '../../src/layout/Wizard.tsx';
 
@@ -28,8 +28,8 @@ describe('Wizard', () => {
 
   it('renders initial step content and Next button', () => {
     render(<Wizard steps={steps} />);
-    expect(screen.getByText('Step 1 Content')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /next/i })).toBeInTheDocument();
+    expect(document.body.contains(screen.getByText('Step 1 Content'))).toBe(true);
+    expect(document.body.contains(screen.getByRole('button', { name: /next/i }))).toBe(true);
   });
 
   it('prevents advancing to next step if isValid returns false', async () => {
@@ -55,7 +55,7 @@ describe('Wizard', () => {
     await user.click(screen.getByRole('button', { name: /next/i }));
 
     expect(validationTrigger).toHaveBeenCalledWith(true);
-    expect(screen.getByText('Invalid Step')).toBeInTheDocument();
+    expect(document.body.contains(screen.getByText('Invalid Step'))).toBe(true);
   });
 
   it('renders Save button on the final step and calls onSave', () => {
@@ -70,6 +70,6 @@ describe('Wizard', () => {
     ];
 
     render(<Wizard steps={singleStep} onSave={handleSave} saveButtonText="Submit Application" />);
-    expect(screen.getByRole('button', { name: /submit application/i })).toBeInTheDocument();
+    expect(document.body.contains(screen.getByRole('button', { name: /submit application/i }))).toBe(true);
   });
 });

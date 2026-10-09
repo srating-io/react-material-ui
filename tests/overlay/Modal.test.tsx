@@ -7,12 +7,12 @@ import { Modal } from '../../src/modal/Modal.tsx';
 describe('Modal', () => {
   it('does not render content when open is false', () => {
     render(<Modal open={false} onClose={() => {}}>Modal Hidden</Modal>);
-    expect(screen.queryByText('Modal Hidden')).not.toBeInTheDocument();
+    expect(screen.queryByText('Modal Hidden')).toBeNull();
   });
 
   it('renders content inside portal when open is true', () => {
     render(<Modal open={true} onClose={() => {}}>Modal Visible</Modal>);
-    expect(screen.getByText('Modal Visible')).toBeInTheDocument();
+    expect(document.body.contains(screen.getByText('Modal Visible'))).toBe(true);
   });
 
   it('renders close button when showCloseButton is true and calls onClose on click', async () => {
@@ -26,7 +26,7 @@ describe('Modal', () => {
     );
 
     const closeIcon = document.querySelector('svg');
-    expect(closeIcon).toBeInTheDocument();
+    expect(closeIcon).not.toBeNull();
 
     if (closeIcon) {
       await user.click(closeIcon);

@@ -7,19 +7,20 @@ import { Button } from '../../src/buttons/Button.tsx';
 describe('Button', () => {
   it('renders button with title text', () => {
     render(<Button title="Click Me" value="test-btn" onClick={() => {}} />);
-    expect(screen.getByRole('button', { name: /click me/i })).toBeInTheDocument();
+    const button = screen.getByRole('button', { name: /click me/i });
+    expect(document.body.contains(button)).toBe(true);
   });
 
   it('defaults htmlType to "button" to prevent accidental form submission', () => {
     render(<Button title="Submit" value="submit-btn" onClick={() => {}} />);
     const button = screen.getByRole('button', { name: /submit/i });
-    expect(button).toHaveAttribute('type', 'button');
+    expect(button.getAttribute('type')).toBe('button');
   });
 
   it('allows setting htmlType to "submit" explicitly', () => {
     render(<Button title="Submit Form" value="submit-btn" htmlType="submit" onClick={() => {}} />);
     const button = screen.getByRole('button', { name: /submit form/i });
-    expect(button).toHaveAttribute('type', 'submit');
+    expect(button.getAttribute('type')).toBe('submit');
   });
 
   it('calls onClick with synthetic event and value when clicked', async () => {
@@ -35,7 +36,7 @@ describe('Button', () => {
 
   it('sets disabled attribute when disabled is true', () => {
     render(<Button title="Disabled" value="disabled-btn" disabled onClick={() => {}} />);
-    const button = screen.getByRole('button', { name: /disabled/i });
-    expect(button).toBeDisabled();
+    const button = screen.getByRole('button', { name: /disabled/i }) as HTMLButtonElement;
+    expect(button.disabled).toBe(true);
   });
 });

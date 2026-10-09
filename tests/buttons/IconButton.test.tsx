@@ -10,9 +10,9 @@ describe('IconButton', () => {
   it('renders button with icon and default type="button"', () => {
     render(<IconButton icon={DummyIcon} value="icon-btn" onClick={() => {}} />);
     const button = screen.getByRole('button');
-    expect(button).toBeInTheDocument();
-    expect(button).toHaveAttribute('type', 'button');
-    expect(screen.getByTestId('dummy-icon')).toBeInTheDocument();
+    expect(document.body.contains(button)).toBe(true);
+    expect(button.getAttribute('type')).toBe('button');
+    expect(document.body.contains(screen.getByTestId('dummy-icon'))).toBe(true);
   });
 
   it('calls onClick with synthetic event and value when clicked', async () => {
@@ -28,16 +28,16 @@ describe('IconButton', () => {
 
   it('supports explicit htmlType="submit"', () => {
     render(<IconButton icon={DummyIcon} value="submit-icon" htmlType="submit" onClick={() => {}} />);
-    expect(screen.getByRole('button')).toHaveAttribute('type', 'submit');
+    expect(screen.getByRole('button').getAttribute('type')).toBe('submit');
   });
 
   it('renders badge count when badge > 0', () => {
     render(<IconButton icon={DummyIcon} value="badge-btn" badge={5} onClick={() => {}} />);
-    expect(screen.getByText('5')).toBeInTheDocument();
+    expect(document.body.contains(screen.getByText('5'))).toBe(true);
   });
 
   it('renders 99+ when badge exceeds 99', () => {
     render(<IconButton icon={DummyIcon} value="badge-btn" badge={120} onClick={() => {}} />);
-    expect(screen.getByText('99+')).toBeInTheDocument();
+    expect(document.body.contains(screen.getByText('99+'))).toBe(true);
   });
 });

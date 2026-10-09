@@ -7,7 +7,7 @@ import { Chip } from '../../src/container/Chip.tsx';
 describe('Chip', () => {
   it('renders chip with title text', () => {
     render(<Chip title="React 19" value="react" />);
-    expect(screen.getByText('React 19')).toBeInTheDocument();
+    expect(document.body.contains(screen.getByText('React 19'))).toBe(true);
   });
 
   it('clicking delete icon only triggers onDelete and does not trigger onClick', async () => {
@@ -45,6 +45,6 @@ describe('Chip', () => {
 
   it('renders filled variant without errors', () => {
     render(<Chip title="Filled Chip" value="filled" filled />);
-    expect(screen.getByText('Filled Chip')).toBeInTheDocument();
+    expect(document.body.contains(screen.getByText('Filled Chip'))).toBe(true);
   });
 });

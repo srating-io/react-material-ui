@@ -7,17 +7,17 @@ import { Paper } from '../../src/container/Paper.tsx';
 describe('Paper', () => {
   it('renders children inside paper surface', () => {
     render(<Paper>Paper Surface Content</Paper>);
-    expect(screen.getByText('Paper Surface Content')).toBeInTheDocument();
+    expect(document.body.contains(screen.getByText('Paper Surface Content'))).toBe(true);
   });
 
   it('renders with transparency without throwing', () => {
     render(<Paper transparency={0.5}>Transparent Paper</Paper>);
-    expect(screen.getByText('Transparent Paper')).toBeInTheDocument();
+    expect(document.body.contains(screen.getByText('Transparent Paper'))).toBe(true);
   });
 
   it('renders with hover and transparency without color conversion crash', () => {
     render(<Paper transparency={0.7} hover>Hoverable Paper</Paper>);
-    expect(screen.getByText('Hoverable Paper')).toBeInTheDocument();
+    expect(document.body.contains(screen.getByText('Hoverable Paper'))).toBe(true);
   });
 
   it('handles click events when onClick is provided', async () => {

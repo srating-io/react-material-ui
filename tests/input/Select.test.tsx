@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, waitFor } from '../test-utils.tsx';
+import { render, screen } from '../test-utils.tsx';
 import userEvent from '@testing-library/user-event';
 import { Select } from '../../src/input/Select.tsx';
 
@@ -13,7 +13,7 @@ describe('Select', () => {
 
   it('renders select with placeholder or label', () => {
     render(<Select options={options} label="Fruit" placeholder="Choose a fruit" />);
-    expect(screen.getByText('Fruit')).toBeInTheDocument();
+    expect(document.body.contains(screen.getByText('Fruit'))).toBe(true);
   });
 
   it('does not mutate caller options array passed via props', () => {
@@ -29,7 +29,7 @@ describe('Select', () => {
 
   it('displays selected option label when value matches', () => {
     render(<Select options={options} value="banana" />);
-    expect(screen.getByText('Banana')).toBeInTheDocument();
+    expect(document.body.contains(screen.getByText('Banana'))).toBe(true);
   });
 
   it('opens menu and calls onChange when option is clicked', async () => {
@@ -58,6 +58,6 @@ describe('Select', () => {
         showError={true}
       />
     );
-    expect(screen.getByText('Please select a valid fruit')).toBeInTheDocument();
+    expect(document.body.contains(screen.getByText('Please select a valid fruit'))).toBe(true);
   });
 });

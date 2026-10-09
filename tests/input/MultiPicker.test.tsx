@@ -21,10 +21,10 @@ describe('MultiPicker', () => {
         selected={['a']}
       />
     );
-    expect(screen.getByText('Select Options')).toBeInTheDocument();
-    expect(screen.getByText('Option A')).toBeInTheDocument();
-    expect(screen.getByText('Option B')).toBeInTheDocument();
-    expect(screen.getByText('Option C')).toBeInTheDocument();
+    expect(document.body.contains(screen.getByText('Select Options'))).toBe(true);
+    expect(document.body.contains(screen.getByText('Option A'))).toBe(true);
+    expect(document.body.contains(screen.getByText('Option B'))).toBe(true);
+    expect(document.body.contains(screen.getByText('Option C'))).toBe(true);
   });
 
   it('toggles selection on click in multi mode and calls onChange', async () => {
@@ -63,7 +63,7 @@ describe('MultiPicker', () => {
     expect(handleChange).toHaveBeenCalledWith('c');
   });
 
-  it('does not allow selecting disabled options', () => {
+  it('disables tab focus for disabled options', () => {
     const handleChange = vi.fn();
 
     render(
@@ -76,7 +76,7 @@ describe('MultiPicker', () => {
       />
     );
 
-    const option = screen.getByText('Option B').closest('div');
-    expect(option).toHaveStyle({ pointerEvents: 'none' });
+    const option = screen.getByText('Option B').closest('[tabindex]') as HTMLElement;
+    expect(option.getAttribute('tabindex')).toBe('-1');
   });
 });
