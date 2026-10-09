@@ -285,9 +285,21 @@ export const Tooltip = <T extends HTMLElement>(
     }
   };
 
+  // Merge tooltip containerRef with any ref attached to children
+  const handleRef = (node: T | null) => {
+    (containerRef as React.MutableRefObject<T | null>).current = node;
+
+    const childRef = (children as unknown as { ref?: React.Ref<T> }).ref ?? children.props.ref;
+    if (typeof childRef === 'function') {
+      childRef(node);
+    } else if (childRef && typeof childRef === 'object' && 'current' in childRef) {
+      (childRef as React.MutableRefObject<T | null>).current = node;
+    }
+  };
+
   // Use cloneElement to add props to the child without wrapping it
   const childWithProps = React.cloneElement(children, {
-    ref: containerRef,
+    ref: handleRef,
     onClick: (...args) => {
       log('onClick');
       handleClick(...args);
