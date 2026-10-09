@@ -53,7 +53,7 @@ export const Chip = (
     lineHeight: 'initial',
   };
 
-  if (onClick || onDelete) {
+  if (onClick) {
     cStyle.cursor = 'pointer';
   }
 
@@ -81,14 +81,17 @@ export const Chip = (
     if (onClick) {
       onClick(e, value);
     }
+  };
 
+  const handleDelete = (e: React.SyntheticEvent) => {
+    e.stopPropagation();
     if (onDelete) {
       onDelete(e, value);
     }
   };
 
   const handleMouseEnter = () => {
-    if (onClick || onDelete) {
+    if (onClick) {
       setHover(true);
     }
   };
@@ -98,9 +101,36 @@ export const Chip = (
   };
 
   return (
-    <div className={Style.getStyleClassName(cStyle)} onClick={handleClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <div
+      className={Style.getStyleClassName(cStyle)}
+      onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={onClick ? (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick(e, value);
+        }
+      } : undefined}
+    >
       <Typography style = {textStyle} type = 'caption'>{title}</Typography>
-      {onDelete ? <div style = {{ display: 'flex', marginLeft: '5px' }}><CancelIcon style = {{ fontSize: '20px' }} /></div> : ''}
+      {onDelete ? (
+        <div
+          role="button"
+          tabIndex={0}
+          style={{ display: 'flex', marginLeft: '5px', cursor: 'pointer' }}
+          onClick={handleDelete}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleDelete(e);
+            }
+          }}
+        >
+          <CancelIcon style={{ fontSize: '20px' }} />
+        </div>
+      ) : ''}
     </div>
   );
 };
