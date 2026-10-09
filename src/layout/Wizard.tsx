@@ -107,18 +107,6 @@ export const Wizard = (
     }
   }, [currentStep, nextStep]);
 
-  useEffect(() => {
-    const handler = () => {
-      handleNext();
-    };
-
-    Kontororu.addEventListener('next', handler);
-
-    return () => {
-      Kontororu.removeEventListener('next', handler);
-    };
-  }, [Kontororu]);
-
   const handleNext = () => {
     const currentStepObj = steps[currentStep];
 
@@ -140,6 +128,23 @@ export const Wizard = (
       onSave();
     }
   };
+
+  const handleNextRef = useRef(handleNext);
+  useEffect(() => {
+    handleNextRef.current = handleNext;
+  });
+
+  useEffect(() => {
+    const handler = () => {
+      handleNextRef.current();
+    };
+
+    Kontororu.addEventListener('next', handler);
+
+    return () => {
+      Kontororu.removeEventListener('next', handler);
+    };
+  }, [Kontororu]);
 
   const handleBack = () => {
     const currentStepObj = steps[currentStep];
