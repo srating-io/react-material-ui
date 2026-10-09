@@ -265,9 +265,11 @@ export const Select: React.FC<SelectInputProps> = (props) => {
 
 
   // convert the select option to a menu option, basically just attached the onSelect handler
-  const menuOptions: MenuOption[] = options.map((option) => {
-    return Objector.extender(option, { onSelect: handleSelect, selectable: true });
-  });
+  const menuOptions: MenuOption[] = options.map((option) => ({
+    ...option,
+    onSelect: handleSelect,
+    selectable: true,
+  }));
 
   const triggerMenu = useCallback((e: React.FocusEvent | React.MouseEvent) => {
     if (disabled) return;

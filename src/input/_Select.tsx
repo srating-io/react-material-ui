@@ -359,9 +359,11 @@ const Select: React.FC<SelectProps> = ({
   }
 
   // convert the select option to a menu option, basically just attached the onSelect handler
-  const menuOptions: MenuOption[] = options.map((option) => {
-    return Objector.extender(option, { onSelect: handleSelect, selectable: true });
-  });
+  const menuOptions: MenuOption[] = options.map((option) => ({
+    ...option,
+    onSelect: handleSelect,
+    selectable: true,
+  }));
 
 
   return (
