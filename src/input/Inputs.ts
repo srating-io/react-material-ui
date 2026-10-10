@@ -1,5 +1,5 @@
 
-type ErrorHandler = {
+export type ErrorHandler = {
   validationError: boolean;
   validationErrorMessage: string | undefined;
 }

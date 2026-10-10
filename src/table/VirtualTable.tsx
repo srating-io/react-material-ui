@@ -72,7 +72,7 @@ export type CustomDecorateHeaderRow = {
   useAlternateLabel: boolean;
 }
 
-interface VirtualTableProps<T> {
+export interface VirtualTableProps<T> {
   ref?: React.RefObject<HTMLTableElement | null>;
   rows: T[];
   columns: TableColumnsType,

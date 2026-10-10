@@ -26,12 +26,12 @@ const TYPES_TO_TAGS = {
 } as const; // Use 'as const' to ensure string literal types are preserved
 
 // Extract the valid 'type' keys
-type TypographyType = keyof typeof TYPES_TO_TAGS;
+export type TypographyType = keyof typeof TYPES_TO_TAGS;
 
-type TypographyElementType<T extends TypographyType> = HTMLElementTagNameMap[typeof TYPES_TO_TAGS[T]];
+export type TypographyElementType<T extends TypographyType> = HTMLElementTagNameMap[typeof TYPES_TO_TAGS[T]];
 
 // Define base props for all Typography variants
-interface TypographyBaseProps<T extends TypographyType> {
+export interface TypographyBaseProps<T extends TypographyType> {
   children: React.ReactNode;
   type: T;
   style?: React.CSSProperties | Record<string, unknown>;
@@ -43,7 +43,7 @@ interface TypographyBaseProps<T extends TypographyType> {
  * all valid HTML attributes for the underlying element (e.g., 'a', 'p').
  * This uses a discriminated union to get correct tag-specific props.
  */
-type TypographyProps =
+export type TypographyProps =
   | (TypographyBaseProps<'a'> & React.ComponentPropsWithoutRef<'a'>)
   | (TypographyBaseProps<'h1'> & React.ComponentPropsWithoutRef<'h1'>)
   | (TypographyBaseProps<'h2'> & React.ComponentPropsWithoutRef<'h2'>)

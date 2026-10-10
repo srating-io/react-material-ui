@@ -327,12 +327,16 @@ export const useSelectInputLogic = (props: SelectInputProps) => {
 
   // Select validation is usually much simpler
   const selectValidator = useCallback((val: string | number | undefined | null, isTouched: boolean): ValidationResult => {
-    if (required && (val === undefined || val === '') && isTouched) {
+    // null is a valid "nothing selected" value - SelectInputProps allows it - so it counts as
+    // empty here rather than as a value that is missing from the options list.
+    const isEmpty = val === undefined || val === null || val === '';
+
+    if (required && isEmpty && isTouched) {
       return { isValid: false, errorMessage: 'Please select an option' };
     }
 
     // Optional: Validate that the current value actually exists in the options list
-    if (val !== undefined && val !== '' && !options.some((opt) => opt.value === val)) {
+    if (!isEmpty && !options.some((opt) => opt.value === val)) {
       return { isValid: false, errorMessage: 'Invalid option selected' };
     }
 

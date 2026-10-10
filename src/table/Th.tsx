@@ -5,7 +5,7 @@ import ArrowUpwardIcon from '@esmalley/react-material-icons/ArrowUpward';
 import ArrowDownwardIcon from '@esmalley/react-material-icons/ArrowDownward';
 import { useState } from 'react';
 
-interface ThProps extends React.ThHTMLAttributes<HTMLTableCellElement> {
+export interface ThProps extends React.ThHTMLAttributes<HTMLTableCellElement> {
   sortDirection?: boolean | string;
   sortable?: boolean
   style?: object;
