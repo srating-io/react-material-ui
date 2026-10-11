@@ -210,10 +210,15 @@ export const Menu = (
     };
   }, [open, onClose, anchor]);
 
-  // if the options change, reset the activeIndex
+  // Rebuilding the options array on every parent render is normal - Select and MultiSelect both do
+  // it to re-attach handlers and icons - so keying this on the array identity threw the keyboard
+  // highlight away on any re-render. Key it on the row values instead, which still changes whenever
+  // rows are actually added, removed, filtered or reordered.
+  const optionsKey = options.map((option) => String(option.value)).join('\u0000');
+
   useEffect(() => {
     setActiveIndex(-1);
-  }, [options]);
+  }, [optionsKey]);
 
 
   // Effect to get the 'menu-root' DOM node once on mount
@@ -456,7 +461,7 @@ export const Menu = (
 
             if (option.customLabel) {
               return (
-                <React.Fragment key={option.value ?? index}>
+                <React.Fragment key={option.value ?? `row-${index}`}>
                   {groupLabel}
                   <div key = {index} onClick={handleIt}>
                     {option.customLabel}
@@ -465,7 +470,7 @@ export const Menu = (
               );
             }
             return (
-              <React.Fragment key={option.value ?? index}>
+              <React.Fragment key={option.value ?? `row-${index}`}>
                 {groupLabel}
                 <MenuItem key = {option.value} style = {option.style || {}} onClick={handleIt} active = {activeIndex === index} disabled = {option.disabled}>
                   {option.icon ? <MenuListIcon>{option.icon}</MenuListIcon> : ''}

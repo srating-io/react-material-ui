@@ -18,6 +18,7 @@ export * from './input/DateInput.tsx';
 export * from './input/hooks/useInputLogic.js';
 export * from './input/Inputs.js';
 export * from './input/MultiPicker.tsx';
+export * from './input/MultiSelect.tsx';
 export * from './input/Select.tsx';
 export * from './input/Switch.tsx';
 export * from './input/Textarea.tsx';

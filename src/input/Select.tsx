@@ -112,6 +112,11 @@ export const Select: React.FC<SelectInputProps> = (props) => {
     paddingLeft = 0;
   }
 
+  // The arrow is absolutely positioned over the right edge, so the text has to stop short of it.
+  // Derived from the same numbers the arrow is positioned with so the two cannot drift apart.
+  const arrowRight = variant === 'standard' ? 0 : 12;
+  const arrowSpace = arrowRight + 20 + 4; // 20px icon at fontSize 20, plus a small gap
+
   const height = 46;
 
   const inputStyle: React.CSSProperties & {
@@ -130,7 +135,7 @@ export const Select: React.FC<SelectInputProps> = (props) => {
     fontSize: '1rem',
     paddingTop,
     paddingLeft,
-    paddingRight: paddingLeft + (clear ? 24 : 0),
+    paddingRight: Math.max(paddingLeft, arrowSpace) + (clear ? 24 : 0),
     cursor: disabled ? 'not-allowed' : 'pointer',
     pointerEvents: disabled ? 'none' : 'auto',
   };
@@ -203,6 +208,10 @@ export const Select: React.FC<SelectInputProps> = (props) => {
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
+    // A flex item's automatic minimum size is its max-content width, so without these it refuses
+    // to shrink and the ellipsis above never takes effect - the label runs under the arrow instead.
+    minWidth: 0,
+    flex: '1 1 auto',
     color: labelColor,
   };
 
@@ -237,7 +246,7 @@ export const Select: React.FC<SelectInputProps> = (props) => {
     transform: 'translateY(-50%)',
     color: labelColor,
     pointerEvents: 'none', // Allow clicking through the icon
-    right: variant === 'standard' ? 0 : 12,
+    right: arrowRight,
   };
 
   const iconStyle = {

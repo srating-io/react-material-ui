@@ -91,6 +91,26 @@ export interface SelectInputProps extends BaseInputProps<string | number | null,
   ref?: RefObject<HTMLDivElement | null>;
 }
 
+export type MultiSelectDisplay = 'labels' | 'count' | 'none';
+
+export interface MultiSelectInputProps extends BaseInputProps<(string | number)[], HTMLDivElement> {
+  options: SelectOption[];
+  ref?: RefObject<HTMLDivElement | null>;
+
+  /** Prepends a row that clears the selection back to `[]`. */
+  allOption?: boolean;
+  /** Label for that row. */
+  allLabel?: string;
+  /** What the closed trigger shows. Overridden by `renderValue`. */
+  displayMode?: MultiSelectDisplay;
+  /** Full control of the trigger text. Receives the selected options, in `value` order. */
+  renderValue?: (selected: SelectOption[]) => React.ReactNode;
+  /** Close the menu after a row is toggled. Off by default - the point is ticking several boxes. */
+  closeOnSelect?: boolean;
+  /** Forwarded to the menu's close button, which helps on a long list. */
+  showMenuCloseButton?: boolean;
+}
+
 export interface DateInputProps extends
   BaseInputProps<string | Date | null, HTMLInputElement>,
   Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value' | 'defaultValue' | 'style'>
@@ -156,9 +176,14 @@ const useBaseInputLogic = <V = Value, T extends HTMLElement = HTMLElement>(props
   useEffect(() => {
     if (!inputHandler) return;
 
+    // `!value` is false for an empty array, so a list-valued input needs its own emptiness test -
+    // otherwise an untouched, empty, required MultiSelect reports no error and a save button lets
+    // it through. Every non-array value keeps exactly the falsy test it had before.
+    const isEmpty = Array.isArray(value) ? value.length === 0 : !value;
+
     const errorCallback = () => ({
-      validationError: hasError || (!value && required),
-      validationErrorMessage: displayedErrorMessage || (!value && required ? 'This field is required' : undefined),
+      validationError: hasError || (isEmpty && required),
+      validationErrorMessage: displayedErrorMessage || (isEmpty && required ? 'This field is required' : undefined),
     });
 
     inputHandler.register(instanceId, errorCallback);
@@ -347,6 +372,34 @@ export const useSelectInputLogic = (props: SelectInputProps) => {
   return useBaseInputLogic<string | number | null, HTMLDivElement>({
     ...props,
     validator: selectValidator,
+  });
+};
+
+
+export const useMultiSelectInputLogic = (props: MultiSelectInputProps) => {
+  const { required, options, validator } = props;
+
+  const multiSelectValidator = useCallback((val: (string | number)[] | undefined, isTouched: boolean): ValidationResult => {
+    // val is undefined when used uncontrolled with no defaultValue
+    const selected = Array.isArray(val) ? val : [];
+
+    if (required && selected.length === 0 && isTouched) {
+      return { isValid: false, errorMessage: 'Please select an option' };
+    }
+
+    // Same courtesy check the single select does - a value with no matching option is a caller bug
+    if (selected.some((v) => !options.some((opt) => opt.value === v))) {
+      return { isValid: false, errorMessage: 'Invalid option selected' };
+    }
+
+    return { isValid: true };
+  }, [required, options]);
+
+
+  return useBaseInputLogic<(string | number)[], HTMLDivElement>({
+    ...props,
+    // unlike the single select, a caller validator wins rather than being silently dropped
+    validator: validator || multiSelectValidator,
   });
 };
 

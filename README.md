@@ -32,6 +32,7 @@ The library includes a wide variety of components categorized as follows:
 - TextInput
 - Textarea
 - Select
+- MultiSelect
 - Switch
 - Date Input
 - MultiPicker

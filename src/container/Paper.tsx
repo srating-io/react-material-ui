@@ -3,6 +3,7 @@
 import { useTheme } from '../contexts/themeContext.tsx';
 import { Color, Style } from '@esmalley/ts-utils';
 import React, { AnimationEventHandler, RefObject } from 'react';
+import { Typography } from '../text/Typography.tsx';
 
 
 /**
@@ -12,6 +13,8 @@ import React, { AnimationEventHandler, RefObject } from 'react';
  */
 export const Paper = (
   {
+    title = '',
+    titleIcon = null,
     elevation = 3,
     style = {},
     children,
@@ -25,6 +28,8 @@ export const Paper = (
     onAnimationEnd,
   }:
   {
+    title?: string;
+    titleIcon?: React.JSX.Element | null;
     elevation?: number;
     style?: React.CSSProperties & {
       '&:hover'?: React.CSSProperties
@@ -91,25 +96,35 @@ export const Paper = (
   // the top offset assumes all the buttons will be 40px in height
 
   return (
-    <div
-      className={Style.getStyleClassName(cStyle)}
-      ref={ref}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-      tabIndex={tabIndex}
-      onAnimationEnd={onAnimationEnd}
-    >
-      <div style = {{ position: 'absolute', right: 0, top: -20, marginRight: 20 }}>
-        {buttons.map((button, index) => {
-          return (
-            <div key = {index} style = {{ margin: '0px 5px', display: 'inline-flex' }}>
-              {button}
-            </div>
-          );
-        })}
+    <>
+      {
+      title || titleIcon ?
+      <div style = {{ display: 'flex', alignItems: 'center' }}>
+        {titleIcon ? <span style = {{ display: 'flex', marginRight: 8 }}>{titleIcon}</span> : ''}
+        {title ? <Typography type = 'h6'>{title}</Typography> : ''}
       </div>
-      {children}
-    </div>
+        : ''
+      }
+      <div
+        className={Style.getStyleClassName(cStyle)}
+        ref={ref}
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
+        tabIndex={tabIndex}
+        onAnimationEnd={onAnimationEnd}
+      >
+        <div style = {{ position: 'absolute', right: 0, top: -20, marginRight: 20 }}>
+          {buttons.map((button, index) => {
+            return (
+              <div key = {index} style = {{ margin: '0px 5px', display: 'inline-flex' }}>
+                {button}
+              </div>
+            );
+          })}
+        </div>
+        {children}
+      </div>
+    </>
   );
 };
 

@@ -19,6 +19,7 @@ import {
   TextInput,
   Textarea,
   Select,
+  MultiSelect,
   DateInput,
   Switch,
   MultiPicker,
@@ -70,6 +71,7 @@ describe('SSR Smoke Suite', () => {
     expect(() => renderSSR(<TextInput placeholder="Type" />)).not.toThrow();
     expect(() => renderSSR(<Textarea placeholder="Area" />)).not.toThrow();
     expect(() => renderSSR(<Select options={[{ value: '1', label: 'One' }]} value="1" />)).not.toThrow();
+    expect(() => renderSSR(<MultiSelect options={[{ value: '1', label: 'One' }]} value={['1']} allOption />)).not.toThrow();
     expect(() => renderSSR(<DateInput value="2026-10-09" />)).not.toThrow();
     expect(() => renderSSR(<Switch checked={true} onChange={() => {}} />)).not.toThrow();
     expect(() => renderSSR(<Calendar value="2026-10-09" onChange={() => {}} />)).not.toThrow();

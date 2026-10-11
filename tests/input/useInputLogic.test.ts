@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useTextInputLogic, useSelectInputLogic } from '../../src/input/hooks/useInputLogic.ts';
+import { useTextInputLogic, useSelectInputLogic, useMultiSelectInputLogic } from '../../src/input/hooks/useInputLogic.ts';
 import { Inputs } from '../../src/input/Inputs.ts';
 
 describe('useInputLogic', () => {
@@ -58,6 +58,43 @@ describe('useInputLogic', () => {
 
     expect(result.current.hasError).toBe(true);
     expect(result.current.displayedErrorMessage).toBe('This field is required');
+  });
+
+  it('validates a required multi select once touched and empty', () => {
+    const { result } = renderHook(() => useMultiSelectInputLogic({ required: true, options: [{ label: 'A', value: 'a' }], value: [] }));
+
+    act(() => {
+      result.current.handlers.handleIsTouched(true);
+    });
+
+    expect(result.current.hasError).toBe(true);
+    expect(result.current.displayedErrorMessage).toBe('Please select an option');
+  });
+
+  it('rejects a multi select value with no matching option', () => {
+    const { result } = renderHook(() => useMultiSelectInputLogic({ options: [{ label: 'A', value: 'a' }], value: ['a', 'nope'] }));
+
+    expect(result.current.hasError).toBe(true);
+    expect(result.current.displayedErrorMessage).toBe('Invalid option selected');
+  });
+
+  it('reports an empty array to the form handler for a required multi select', () => {
+    // An empty array is truthy, so the registry needs its own emptiness test - this is the one
+    // case the validator cannot cover, since it stays valid until the input is touched.
+    const controller = new Inputs();
+
+    renderHook(() => useMultiSelectInputLogic({ required: true, inputHandler: controller, options: [{ label: 'A', value: 'a' }], value: [] }));
+
+    expect(controller.getErrors()).toHaveLength(1);
+  });
+
+  it('still treats an empty string select value as empty for the form handler', () => {
+    // Guards the non-array branch of that same emptiness test against regression.
+    const controller = new Inputs();
+
+    renderHook(() => useSelectInputLogic({ required: true, inputHandler: controller, options: [{ label: 'A', value: 'a' }], value: '' }));
+
+    expect(controller.getErrors()).toHaveLength(1);
   });
 });
 
