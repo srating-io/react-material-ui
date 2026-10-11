@@ -99,7 +99,7 @@ export const Paper = (
     <>
       {
       title || titleIcon ?
-      <div style = {{ display: 'flex', alignItems: 'center' }}>
+      <div style = {{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
         {titleIcon ? <span style = {{ display: 'flex', marginRight: 8 }}>{titleIcon}</span> : ''}
         {title ? <Typography type = 'h6'>{title}</Typography> : ''}
       </div>
