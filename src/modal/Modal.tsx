@@ -28,7 +28,7 @@ export const Modal = (
 ) => {
   // const theme = useTheme();
   const [mounted, setMounted] = useState(false);
-  const contentRef = useRef<HTMLDivElement | null>(null);
+  const centeringRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -131,13 +131,18 @@ export const Modal = (
   };
 
 
+  /**
+   * Close only when the press landed on the backdrop or the centering wrapper.
+   *
+   * This asked whether the target was outside the content instead, which a child that portals
+   * elsewhere always is: a Plane renders into the same #menu-root as a sibling, so its events
+   * reach this handler through the react tree while its dom node sits outside the content. Picking
+   * a date in a DateInput closed the whole modal.
+   */
   const handleClose = (e: React.MouseEvent | React.TouchEvent) => {
     if (
       e.target === e.currentTarget ||
-      (
-        contentRef.current &&
-        !contentRef.current.contains(e.target as Node)
-      )
+      e.target === centeringRef.current
     ) {
       e.preventDefault();
       e.stopPropagation();
@@ -156,7 +161,10 @@ export const Modal = (
       onMouseDown={handleClose}
       onTouchEnd={handleClose}
     >
-      <div className = {Style.getStyleClassName(centeringStyle)}>
+      <div
+        className = {Style.getStyleClassName(centeringStyle)}
+        ref={centeringRef}
+      >
         <div
           className = {Style.getStyleClassName(contentStyle)}
           onClick = {(e) => {
@@ -164,7 +172,6 @@ export const Modal = (
             e.nativeEvent.stopPropagation();
           }}
           // onAnimationEnd={handleAnimationEnd}
-          ref={contentRef}
         >
           {showCloseButton ? closeContainer : ''}
           {getContents()}
