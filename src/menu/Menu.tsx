@@ -82,6 +82,7 @@ export const Menu = (
     },
     showCloseButton = false,
     useAnchorWidth = false,
+    elevateAnchor = false,
     style = {},
     ...props
   }:
@@ -93,6 +94,7 @@ export const Menu = (
     anchorOrigin?: anchorOrigin;
     showCloseButton?: boolean;
     useAnchorWidth?: boolean;
+    elevateAnchor?: boolean;
     style?: React.CSSProperties;
   },
 ) => {
@@ -108,6 +110,9 @@ export const Menu = (
 
   const [finalDimensions, setFinalDimensions] = useState<{ maxHeight?: number; maxWidth?: number; width?: number; } | null>(null);
 
+  // Viewport box of the anchor, kept so the dim layer can leave it uncovered.
+  const [anchorHole, setAnchorHole] = useState<{ top: number; left: number; right: number; bottom: number } | null>(null);
+
   const [activeIndex, setActiveIndex] = useState(-1); // For keyboard navigation
 
   // Store the determined transform origin for CSS
@@ -115,7 +120,11 @@ export const Menu = (
 
   const { width } = useWindowDimensions() as Dimensions;
 
-  const overlayStyle: React.CSSProperties = {
+  const backdropColor = 'rgba(0, 0, 0, 0.4)';
+
+  // The dim is painted by children, not by this container, so a hole can be left over the anchor
+  // without clipping the popup - which is positioned against this container and needs it intact.
+  const containerStyle: React.CSSProperties = {
     position: 'fixed',
     display: 'none',
     top: 0,
@@ -123,8 +132,6 @@ export const Menu = (
     right: 0,
     bottom: 0,
     zIndex: 1300,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    // transition: 'background-color 285ms cubic-bezier(0.4, 0, 0.2, 1)',
   };
 
 
@@ -140,6 +147,7 @@ export const Menu = (
       maxHeight: finalDimensions?.maxHeight || 'calc(100% - 32px)',
       maxWidth: finalDimensions?.maxWidth || 'calc(100% - 32px)',
       outline: 0,
+      pointerEvents: 'auto',
       opacity: 0,
       // opacity: _isVisible ? 1 : 0,
       // transition: `opacity ${transitionDurationMS}ms cubic-bezier(0.4, 0, 0.2, 1), transform 190ms cubic-bezier(0.4, 0, 0.2, 1)`,
@@ -150,7 +158,7 @@ export const Menu = (
 
   if (finalPosition && open && finalDimensions) {
     paperStyle.display = 'block';
-    overlayStyle.display = 'block';
+    containerStyle.display = 'block';
 
     // only make it visible after all the shifting and adjustments have been made
     if (hasWidth) {
@@ -164,6 +172,7 @@ export const Menu = (
   const handleClose = () => {
     setFinalPosition(null);
     setFinalDimensions(null);
+    setAnchorHole(null);
     setHasWidth(false);
     onClose();
   };
@@ -304,6 +313,7 @@ export const Menu = (
       }
 
       setFinalPosition({ top: calculatedTop, left: calculatedLeft });
+      setAnchorHole({ top: anchorRect.top, left: anchorRect.left, right: anchorRect.right, bottom: anchorRect.bottom });
       if (useAnchorWidth) {
         setFinalDimensions({ maxHeight: finalMaxHeight, maxWidth: width - 36, width: anchorRect.width });
       } else {
@@ -437,10 +447,45 @@ export const Menu = (
     </div>
   );
 
+  // Four tiled panels rather than one full-bleed dim, so the anchor box is never painted over.
+  // Integer edges keep them tiling exactly; fractional rects leave hairline seams between panels.
+  const hole = (elevateAnchor && anchorHole) ? {
+    top: Math.max(0, Math.floor(anchorHole.top)),
+    left: Math.max(0, Math.floor(anchorHole.left)),
+    right: Math.ceil(anchorHole.right),
+    bottom: Math.ceil(anchorHole.bottom),
+  } : null;
+
+  const backdropStyle: React.CSSProperties = {
+    position: 'absolute',
+    backgroundColor: backdropColor,
+    pointerEvents: 'auto',
+  };
+
+  let backdrop = (
+    <div data-menu-backdrop='' className={Style.getStyleClassName({ ...backdropStyle, top: 0, left: 0, right: 0, bottom: 0 })} />
+  );
+
+  if (hole) {
+    // Clicks in the hole reach the anchor; the panels still catch the outside click that closes.
+    containerStyle.pointerEvents = 'none';
+    const rowHeight = Math.max(0, hole.bottom - hole.top);
+
+    backdrop = (
+      <>
+        <div data-menu-backdrop='' className={Style.getStyleClassName({ ...backdropStyle, top: 0, left: 0, right: 0, height: hole.top })} />
+        <div data-menu-backdrop='' className={Style.getStyleClassName({ ...backdropStyle, top: hole.bottom, left: 0, right: 0, bottom: 0 })} />
+        <div data-menu-backdrop='' className={Style.getStyleClassName({ ...backdropStyle, top: hole.top, left: 0, width: hole.left, height: rowHeight })} />
+        <div data-menu-backdrop='' className={Style.getStyleClassName({ ...backdropStyle, top: hole.top, left: hole.right, right: 0, height: rowHeight })} />
+      </>
+    );
+  }
+
   const group_x_decorated: Record<string, boolean> = {};
 
   return ReactDOM.createPortal(
-    <div className={Style.getStyleClassName(overlayStyle)} {...props}>
+    <div className={Style.getStyleClassName(containerStyle)} {...props}>
+      {backdrop}
       <Paper style={paperStyle} ref = {menuContentRef} transparency={0.95}>
         {showCloseButton ? closeContainer : ''}
         <MenuList>
