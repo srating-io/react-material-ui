@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useTheme } from '../contexts/themeContext.tsx';
@@ -11,7 +10,6 @@ import { Inputs } from '../input/Inputs.ts';
 export type MultiPickerOption = {
   label: string;
   value: string | number;
-  // locks this one option, the rest of the picker stays usable
   disabled?: boolean;
 };
 
@@ -33,6 +31,20 @@ export interface MultiPickerProps {
   triggerValidation?: boolean;
   numberOfColumns?: number;
 }
+
+const areAllOptionsDisabled = (options: MultiPickerOption[]): boolean => {
+  if (options.length === 0) {
+    return false;
+  }
+
+  for (let i = 0; i < options.length; i++) {
+    if (!options[i].disabled) {
+      return false;
+    }
+  }
+
+  return true;
+};
 
 
 export const MultiPicker = ({
@@ -59,7 +71,7 @@ export const MultiPicker = ({
   const [isTouched, setIsTouched] = useState(false);
 
   // nothing left to pick means required can never be satisfied, so it must not block a save
-  const allOptionsDisabled = options.length > 0 && options.every((option) => option.disabled);
+  const allOptionsDisabled = areAllOptionsDisabled(options);
   const isMissingSelection = required && !allOptionsDisabled && internalSelected.length === 0;
 
   const hasError = externalError || (isMissingSelection && (isTouched || triggerValidation));
@@ -180,6 +192,7 @@ export const MultiPicker = ({
 
     if (disabled) {
       paperStyle.color = theme.text.disabled;
+      paperStyle.backgroundColor = theme.action.disabledBackground;
       paperStyle.pointerEvents = 'none';
     } else if (option.disabled) {
       // matches the disabled Button fill, but a selected one keeps its blue and only dims, so a
@@ -188,8 +201,8 @@ export const MultiPicker = ({
       paperStyle.pointerEvents = 'none';
 
       if (!isSelected) {
-        paperStyle.backgroundColor = theme.grey[300];
-        paperStyle.color = theme.grey[500];
+        paperStyle.backgroundColor = theme.action.disabledBackground;
+        paperStyle.color = theme.text.disabled;
       }
     }
 
