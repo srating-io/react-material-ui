@@ -11,6 +11,8 @@ import { Inputs } from '../input/Inputs.ts';
 export type MultiPickerOption = {
   label: string;
   value: string | number;
+  // locks this one option, the rest of the picker stays usable
+  disabled?: boolean;
 };
 
 // todo compbine with other inputs typ props in useInputLgic?
@@ -56,14 +58,18 @@ export const MultiPicker = ({
   const [internalSelected, setInternalSelected] = useState<(string | number)[]>(selected || []);
   const [isTouched, setIsTouched] = useState(false);
 
-  const hasError = externalError || (required && (isTouched || triggerValidation) && internalSelected.length === 0);
+  // nothing left to pick means required can never be satisfied, so it must not block a save
+  const allOptionsDisabled = options.length > 0 && options.every((option) => option.disabled);
+  const isMissingSelection = required && !allOptionsDisabled && internalSelected.length === 0;
+
+  const hasError = externalError || (isMissingSelection && (isTouched || triggerValidation));
 
   const errorCallback = useCallback(() => {
     return {
-      validationError: hasError || (internalSelected.length === 0 && required),
-      validationErrorMessage: errorMessage || (internalSelected.length === 0 && required ? 'Selection is required' : undefined),
+      validationError: hasError || isMissingSelection,
+      validationErrorMessage: errorMessage || (isMissingSelection ? 'Selection is required' : undefined),
     };
-  }, [hasError, internalSelected.length, required, errorMessage]);
+  }, [hasError, isMissingSelection, errorMessage]);
 
   useEffect(() => {
     if (inputHandler) {
@@ -131,25 +137,26 @@ export const MultiPicker = ({
     }
   };
 
-  const handleOptionClick = (e: React.SyntheticEvent, value: string | number) => {
+  const handleOptionClick = (e: React.SyntheticEvent, option: MultiPickerOption) => {
     e.preventDefault();
 
-    if (disabled) return;
+    if (disabled || option.disabled) return;
 
-    handleSelection(value);
+    handleSelection(option.value);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>, value: string | number) => {
-    if (disabled) return;
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>, option: MultiPickerOption) => {
+    if (disabled || option.disabled) return;
     // 'Enter' or ' ' (Spacebar) are standard for activating buttons
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault(); // Prevent scrolling when pressing Space
-      handleSelection(value);
+      handleSelection(option.value);
     }
   };
 
   const getOptionContainer = (option: MultiPickerOption) => {
     const isSelected = internalSelected.includes(option.value);
+    const isDisabled = disabled || !!option.disabled;
 
     // Dynamic Styles
     const paperStyle: React.CSSProperties = {
@@ -174,16 +181,26 @@ export const MultiPicker = ({
     if (disabled) {
       paperStyle.color = theme.text.disabled;
       paperStyle.pointerEvents = 'none';
+    } else if (option.disabled) {
+      // matches the disabled Button fill, but a selected one keeps its blue and only dims, so a
+      // selection the caller still owns is not hidden
+      paperStyle.opacity = 0.6;
+      paperStyle.pointerEvents = 'none';
+
+      if (!isSelected) {
+        paperStyle.backgroundColor = theme.grey[300];
+        paperStyle.color = theme.grey[500];
+      }
     }
 
     return (
       <Paper
         key={option.value} // Always need a key for map
-        hover = {!disabled}
+        hover = {!isDisabled}
         style={paperStyle}
-        tabIndex={disabled ? -1 : 0} // Allows the element to be focused via Tab when not disabled
-        onClick={(e) => handleOptionClick(e, option.value)}
-        onKeyDown={(e) => handleKeyDown(e, option.value)}
+        tabIndex={isDisabled ? -1 : 0} // Allows the element to be focused via Tab when not disabled
+        onClick={(e) => handleOptionClick(e, option)}
+        onKeyDown={(e) => handleKeyDown(e, option)}
       >
         <Typography type="body1" style={{ color: 'inherit' }}>
            {option.label}
